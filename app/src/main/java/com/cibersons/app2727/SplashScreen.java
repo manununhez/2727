@@ -1,4 +1,4 @@
-package cibersone.app2727;
+package com.cibersons.app2727;
 
 import android.app.Activity;
 import android.content.Intent;

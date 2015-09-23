@@ -1,4 +1,4 @@
-package cibersone.app2727.Fragment;
+package com.cibersons.app2727.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cibersone.app2727.R;
+import com.cibersons.app2727.R;
 
 /**
  * Created by Manuel on 8/19/2015.

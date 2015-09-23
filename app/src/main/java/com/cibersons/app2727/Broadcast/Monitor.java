@@ -1,4 +1,4 @@
-package cibersone.app2727.Broadcast;
+package com.cibersons.app2727.Broadcast;
 
 /**
  * Created by Manuel on 8/25/2015.
@@ -9,15 +9,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
-import cibersone.app2727.MainActivity;
-import cibersone.app2727.R;
+import com.cibersons.app2727.R;
 
 public class Monitor extends BroadcastReceiver {
     final SmsManager sms = SmsManager.getDefault();

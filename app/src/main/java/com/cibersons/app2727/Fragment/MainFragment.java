@@ -1,36 +1,17 @@
-package cibersone.app2727.Fragment;
+package com.cibersons.app2727.Fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.telephony.SmsManager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import cibersone.app2727.R;
-import cibersone.app2727.Utils.CustomDialog;
-import cibersone.app2727.beans.Recycler;
+import com.cibersons.app2727.R;
 
 /**
  * Created by Manuel on 8/19/2015.

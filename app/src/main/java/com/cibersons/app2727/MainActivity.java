@@ -1,17 +1,19 @@
-package cibersone.app2727;
+package com.cibersons.app2727;
+
+import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import cibersone.app2727.Adapter.TabAdapter;
-import cibersone.app2727.Fragment.HistorialFragment;
-import cibersone.app2727.Fragment.InstructivoFragment;
-import cibersone.app2727.Fragment.MainFragment;
-import cibersone.app2727.Fragment.PerfilFragment;
+import com.cibersons.app2727.Adapter.TabAdapter;
+import com.cibersons.app2727.Fragment.HistorialFragment;
+import com.cibersons.app2727.Fragment.InstructivoFragment;
+import com.cibersons.app2727.Fragment.MainFragment;
+import com.cibersons.app2727.Fragment.PerfilFragment;
+
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener {
 

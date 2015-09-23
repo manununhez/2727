@@ -1,4 +1,4 @@
-package cibersone.app2727;
+package com.app2727;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

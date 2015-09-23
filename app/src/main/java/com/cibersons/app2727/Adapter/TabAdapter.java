@@ -1,20 +1,14 @@
-package cibersone.app2727.Adapter;
+package com.cibersons.app2727.Adapter;
 
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cibersone.app2727.R;
 
 /**
  * Created by Manuel on 7/6/2015.

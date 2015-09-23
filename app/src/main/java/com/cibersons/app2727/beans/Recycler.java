@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package cibersone.app2727.beans;
+package com.cibersons.app2727.beans;
+
+import com.cibersons.app2727.R;
 
 import java.util.Random;
-
-import cibersone.app2727.R;
 
 
 public class Recycler {

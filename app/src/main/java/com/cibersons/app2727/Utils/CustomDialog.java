@@ -1,14 +1,12 @@
-package cibersone.app2727.Utils;
+package com.cibersons.app2727.Utils;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import cibersone.app2727.R;
+import com.cibersons.app2727.R;
 
 /**
  * Created by Manuel on 9/3/2015.
