@@ -5,17 +5,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cibersons.app2727.Adapter.TabAdapter;
-import com.cibersons.app2727.Fragment.HistorialFragment;
-import com.cibersons.app2727.Fragment.InstructivoFragment;
-import com.cibersons.app2727.Fragment.MainFragment;
-import com.cibersons.app2727.Fragment.PerfilFragment;
+import com.cibersons.app2727.adapter.TabAdapter;
+import com.cibersons.app2727.beans.User.UserResponse;
+import com.cibersons.app2727.comm.ApiImpl;
+import com.cibersons.app2727.comm.CommReq;
+import com.cibersons.app2727.fragment.HistorialFragment;
+import com.cibersons.app2727.fragment.InstructivoFragment;
+import com.cibersons.app2727.fragment.MainFragment;
+import com.cibersons.app2727.fragment.PerfilFragment;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
+import java.util.logging.Logger;
 
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener {
+
+
+public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener, HistorialFragment.OnHistorialListener {
 
     private ViewPager pager;
     private TabAdapter adapter;
@@ -96,5 +108,48 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
         if (pressed == 1) {
             pager.setCurrentItem(2);
         }
+    }
+
+    @Override
+    public void onGetHistorial() {
+        Log.i("2727","onGETHISTORIAL");
+        String accion = CommReq.GET_USER;
+        String appId = "";
+        String celular = "0984000000";
+        String cedula = "44444444";
+        String operadora = "pytgo";
+        String userAutent = "CnsgUser";
+        String passAutent = "123456";
+
+        PostExample example = new PostExample();
+        String json = example.bowlingJson("Jesse", "Jake");
+        try {
+            example.post("http://www.roundsapp.com/post", json, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String responseStr = response.body().string();
+                    Log.d("DEBUG", responseStr);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       /* new ApiImpl(MainActivity.this).getUser(accion, appId, celular, cedula, operadora, userAutent, passAutent, new Callback<UserResponse>() {
+            @Override
+            public void success(UserResponse userResponse, Response response) {
+                Log.d("DEBUG", userResponse.getData().toString());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.d("Debug", error.getMessage());
+            }
+        });*/
     }
 }

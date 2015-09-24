@@ -1,4 +1,4 @@
-package com.cibersons.app2727.Utils;
+package com.cibersons.app2727.utils;
 
 import android.app.Activity;
 import android.app.Dialog;

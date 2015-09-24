@@ -1,4 +1,4 @@
-package com.cibersons.app2727.Adapter;
+package com.cibersons.app2727.adapter;
 
 import android.content.res.Resources;
 import android.support.v4.app.Fragment;

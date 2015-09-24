@@ -1,7 +1,8 @@
-package com.cibersons.app2727.Fragment;
+package com.cibersons.app2727.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,11 +36,17 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
+
+        Activity activity = null;
+
+        if (context instanceof Activity){
+            activity=(Activity) context;
+        }
         try {
             mCallback = (OnHeadlineSelectedListener) activity;
         } catch (ClassCastException e) {
@@ -121,97 +128,5 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
-//    private void setupRecyclerView(RecyclerView recyclerView) {
-//        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
-//        recyclerView.setAdapter(new MainRecyclerViewAdapter(getActivity(),
-//                getRandomSublist(Recycler.sRecyclerStrings, Recycler.sRecyclerStrings.length)));
-//    }
-//
-//    private List<String> getRandomSublist(String[] array, int amount) {
-//        ArrayList<String> list = new ArrayList<>(amount);
-//        Random random = new Random();
-//        int i = 0;
-//        while (list.size() < amount) {
-//            list.add(array[i++]);
-//        }
-//        return list;
-//    }
-//
-//    public class MainRecyclerViewAdapter
-//            extends RecyclerView.Adapter<MainRecyclerViewAdapter.ViewHolder> {
-//
-//        private final TypedValue mTypedValue = new TypedValue();
-//        private int mBackground;
-//        private List<String> mValues;
-//
-//        public class ViewHolder extends RecyclerView.ViewHolder {
-//            public String mBoundString;
-//
-//            public final View mView;
-//            public final ImageView mImageView;
-//            public final TextView mTextView;
-//
-//            public ViewHolder(View view) {
-//                super(view);
-//                mView = view;
-//                mImageView = (ImageView) view.findViewById(R.id.avatar);
-//                mTextView = (TextView) view.findViewById(android.R.id.text1);
-//            }
-//
-//            @Override
-//            public String toString() {
-//                return super.toString() + " '" + mTextView.getText();
-//            }
-//        }
-//
-//        public String getValueAt(int position) {
-//            return mValues.get(position);
-//        }
-//
-//        public MainRecyclerViewAdapter(Context context, List<String> items) {
-//            context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-//            mBackground = mTypedValue.resourceId;
-//            mValues = items;
-//        }
-//
-//        @Override
-//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(parent.getContext())
-//                    .inflate(R.layout.main_list_item, parent, false);
-//            view.setBackgroundResource(mBackground);
-//            return new ViewHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(final ViewHolder holder, int position) {
-//            holder.mBoundString = mValues.get(position);
-//            holder.mTextView.setText(mValues.get(position));
-//
-//            holder.mView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Context context = v.getContext();
-////                    Intent intent = new Intent(context, ProductDetailActivity.class);
-////                    intent.putExtra(ProductDetailActivity.EXTRA_NAME, holder.mBoundString);
-////                    context.startActivity(intent);
-////                    LoginFragment loginFragment = new LoginFragment();
-////                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-////
-////                    // Store the Fragment in stack
-////                    transaction.addToBackStack(null);
-////                    transaction.replace(R.id.framelayout_product_cheese, loginFragment).commit();
-//                }
-//            });
-//
-//            Glide.with(holder.mImageView.getContext())
-//                    .load(Recycler.getRandomRecyclerDrawable())
-//                    .into(holder.mImageView);
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return mValues.size();
-//        }
-//    }
 
 }

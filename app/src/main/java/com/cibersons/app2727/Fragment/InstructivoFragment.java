@@ -1,4 +1,4 @@
-package com.cibersons.app2727.Fragment;
+package com.cibersons.app2727.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
