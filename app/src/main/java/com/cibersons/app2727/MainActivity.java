@@ -10,24 +10,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.cibersons.app2727.adapter.TabAdapter;
-import com.cibersons.app2727.beans.User.UserResponse;
-import com.cibersons.app2727.comm.ApiImpl;
 import com.cibersons.app2727.comm.CommReq;
+import com.cibersons.app2727.comm.ApiImpl;
 import com.cibersons.app2727.fragment.HistorialFragment;
 import com.cibersons.app2727.fragment.InstructivoFragment;
 import com.cibersons.app2727.fragment.MainFragment;
 import com.cibersons.app2727.fragment.PerfilFragment;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 
-
-
-public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener, HistorialFragment.OnHistorialListener {
+public class MainActivity extends AppCompatActivity  implements MainFragment.OnHeadlineSelectedListener{ //, HistorialFragment.OnHistorialListener {
 
     private ViewPager pager;
     private TabAdapter adapter;
@@ -110,9 +107,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
         }
     }
 
-    @Override
-    public void onGetHistorial() {
-        Log.i("2727","onGETHISTORIAL");
+   /* @Override
+    public boolean onGetHistorial() {
+        Log.i("2727", "onGETHISTORIAL");
         String accion = CommReq.GET_USER;
         String appId = "";
         String celular = "0984000000";
@@ -121,10 +118,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
         String userAutent = "CnsgUser";
         String passAutent = "123456";
 
-        PostExample example = new PostExample();
-        String json = example.bowlingJson("Jesse", "Jake");
+        ApiImpl example = new ApiImpl();
+        String userJson = example.getUserJson();
+
+        /*Log.i("DEBUG","userJson enviado = "+userJson);
         try {
-            example.post("http://www.roundsapp.com/post", json, new Callback() {
+            example.post(CommReq.BASE_URL, userJson, new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
 
@@ -133,23 +132,90 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String responseStr = response.body().string();
-                    Log.d("DEBUG", responseStr);
+                    Log.i("DEBUG", "SUCESS!!");
+                    Log.i("DEBUG", responseStr);
+                    Log.i("DEBUG", response.message());
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-       /* new ApiImpl(MainActivity.this).getUser(accion, appId, celular, cedula, operadora, userAutent, passAutent, new Callback<UserResponse>() {
-            @Override
-            public void success(UserResponse userResponse, Response response) {
-                Log.d("DEBUG", userResponse.getData().toString());
-            }
+        String transactionJsonHistorial = example.getTransaction("historial");
+        Log.i("DEBUG","transactionJsonHistorial enviado = "+transactionJsonHistorial);
+        try {
+            example.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    return false;
+                }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d("Debug", error.getMessage());
-            }
-        });*/
-    }
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String responseStr = response.body().string();
+
+                    Log.i("DEBUG", "SUCESS!!");
+                    Log.i("DEBUG", responseStr);
+                    Log.i("DEBUG", response.message());
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*String transactionJsonUnico = example.getTransaction("unico");
+        Log.i("DEBUG","transactionJsonUnico enviado = "+transactionJsonUnico);
+        try {
+            example.post(CommReq.BASE_URL, transactionJsonUnico, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String responseStr = response.body().string();
+
+                    Log.i("DEBUG", "SUCESS!!");
+                    Log.i("DEBUG", responseStr);
+                    Log.i("DEBUG", response.message());
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        //String json = example.bowlingJson("Jesse", "Jake");
+        /*try {
+            example.post("http://www.roundsapp.com/post", json, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    Log.i("DEBUG", "FAILURE!!");
+                    Log.i("DEBUG", request.toString());
+                    Log.i("DEBUG", e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String responseStr = response.body().string();
+                    Log.i("DEBUG", "SUCESS!!");
+                    Log.i("DEBUG", responseStr);
+                    Log.i("DEBUG", response.message());
+
+                    if (!response.isSuccessful())
+                        throw new IOException("Unexpected code " + response);
+
+                    Headers responseHeaders = response.headers();
+                    for (int i = 0; i < responseHeaders.size(); i++) {
+                        Log.i("PRUEBA", responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                    }
+
+                    Log.i("PRUEBA", response.body().string());
+
+                }
+            });
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+    }*/
 }
