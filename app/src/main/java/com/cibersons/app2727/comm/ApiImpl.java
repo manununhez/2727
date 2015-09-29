@@ -63,4 +63,9 @@ public class ApiImpl {
                 "\"tipoConsulta\": \""+tipoConsulta+"\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
     }
 
+    public String putUserObject(String nroCelular, String nroDocumento, String nombreApellido){
+        return "{\"accion\":\"putUser\",\"appId\":\"\"," +
+                "\"celular\":\""+nroCelular+"\",\"cedula\":\""+nroDocumento+"\",\"nombre\":\""+nombreApellido+"\",\"operadora\":\"pytgo\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
+    }
+
 }

@@ -48,57 +48,11 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
 
     SwipeRefreshLayout swipeLayout;
     // OnHistorialListener mCallback;
-    CardView cardView;
-    ArrayList<String> historialList;
+    private CardView cardView;
+    private ArrayList<String> historialList;
+    private RecyclerView recyclerView;
+    private TransaccionResponse transaccionResponse;
 
-    @Override
-    public void onRefresh() {
-        fetchTimelineAsync(0);
-
-    }
-
-    public void fetchTimelineAsync(int page) {
-        /*client.getHomeTimeline(0, new JsonHttpResponseHandler() {
-            public void onSuccess(JSONArray json) {
-                // Remember to CLEAR OUT old items before appending in the new ones
-                adapter.clear();
-                // ...the data has come back, add new items to your adapter...
-                adapter.addAll(...);
-                // Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-            }
-
-            public void onFailure(Throwable e) {
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
-            }
-        });*/
-    }
-
-
-    // Container Activity must implement this interface
-  /*  public interface OnHistorialListener {
-        public boolean onGetHistorial();
-    }*/
-
-  /*  @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-
-        Activity activity = null;
-
-        if (context instanceof Activity) {
-            activity = (Activity) context;
-        }
-        try {
-            mCallback = (OnHistorialListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnHistorialListener");
-        }
-    }*/
 
     public static HistorialFragment newInstance(String title) {
         if (instance == null) {
@@ -116,7 +70,7 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_historial, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         setupRecyclerView(recyclerView);
         cardView = (CardView) rootView.findViewById(R.id.card_view);
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
@@ -144,17 +98,17 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
         //recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), historialList));
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                onGetHistorial();
-            }
-        });
-    }
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//
+//        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                onGetHistorial();
+//            }
+//        });
+//    }
 
     @Override
     public void onResume() {
@@ -172,8 +126,8 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
         String userAutent = "CnsgUser";
         String passAutent = "123456";
 
-        ApiImpl example = new ApiImpl();
-        String userJson = example.getUserJson();
+        ApiImpl postOkHttp = new ApiImpl();
+        String userJson = postOkHttp.getUserJson();
 
         /*Log.i("DEBUG","userJson enviado = "+userJson);
         try {
@@ -195,10 +149,11 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
             e.printStackTrace();
         }*/
 
-        String transactionJsonHistorial = example.getTransaction("historial");
+
+        String transactionJsonHistorial = postOkHttp.getTransaction("historial");
         Log.i("DEBUG", "transactionJsonHistorial enviado = " + transactionJsonHistorial);
         try {
-            example.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
+            postOkHttp.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
                 }
@@ -209,28 +164,32 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
 
                     Log.i("DEBUG", "SUCESS!!");
                     Log.i("DEBUG", responseStr);
-                    //try {
-                        String prueba = "{\"status\":\"OK\",\"cantidad\":\"10\",\"data\":{[{\"idTransaccion\": \"26\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"25\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"24\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"23\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"22\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"21\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"20\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"19\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"18\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"17\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"}]}}";
-                      //  JSONObject jsonObject = new JSONObject(prueba);
+                    try {
+//        String prueba = "{\"status\":\"OK\",\"cantidad\":\"10\",\"data\":{\"transaccion\":[{\"idTransaccion\": \"26\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"25\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"24\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"23\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"22\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"21\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"20\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"19\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"18\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"17\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"}]}}";
+                        JSONObject jsonObject = new JSONObject(responseStr);
                         Gson gson = new Gson();
-                        TransaccionResponse transaccionResponse = gson.fromJson(prueba, TransaccionResponse.class);
-                       /* JSONArray jsonArray = new JSONArray(jsonObject.getString("data"));
-                        List<Transaccion> list = new ArrayList<Transaccion>();
-                        for (int i=0; i<jsonArray.length(); i++) {
-                            list.add(((JSONObject) jsonArray.getString(i)).getString("idTransaccion"));
-                        }*/
+
+                        transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
+
+//                        JSONArray jsonArray = new JSONArray(jsonObject.getString("data"));
+//                        List<Transaccion> list = new ArrayList<Transaccion>();
+//                        for (int i=0; i<jsonArray.length(); i++) {
+//                            list.add(((JSONObject) jsonArray.getString(i)).getString("idTransaccion"));
+//                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
+
+                                swipeLayout.setRefreshing(false);
+
+                            }
+                        });
                         Log.d("DEBUG",transaccionResponse.toString());
-                   /* } catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
-                    }*/
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    }
 
-                            swipeLayout.setRefreshing(false);
-
-                        }
-                    });
 
                 }
             });
@@ -294,12 +253,18 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
 
     }
 
+    @Override
+    public void onRefresh() {
+        onGetHistorial();
+    }
+
+
     public class HistorialRecyclerViewAdapter
             extends RecyclerView.Adapter<HistorialRecyclerViewAdapter.ViewHolder> {
 
         private final TypedValue mTypedValue = new TypedValue();
         private int mBackground;
-        private ArrayList<Transaccion> mValues;
+        private List<Transaccion> mValues;
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public Transaccion mBoundString;
@@ -323,7 +288,7 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
 //            return mValues.get(position);
 //        }
 
-        public HistorialRecyclerViewAdapter(Context context,ArrayList<Transaccion> items) {
+        public HistorialRecyclerViewAdapter(Context context,List<Transaccion> items) {
             context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
             mBackground = mTypedValue.resourceId;
             mValues = items;

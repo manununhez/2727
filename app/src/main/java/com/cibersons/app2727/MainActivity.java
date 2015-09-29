@@ -1,5 +1,7 @@
 package com.cibersons.app2727;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -37,10 +39,20 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
             R.mipmap.ic_perfil_new
     };
 
+    private boolean mSilentMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Restore preferences
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name), 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.save_ci), getString(R.string.default_value));
+        editor.putString(getString(R.string.save_tel), getString(R.string.default_value) );
+        editor.commit();
+         mSilentMode = sharedPref.getBoolean("silentMode", false);
+
 
         pager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new TabAdapter(getResources(), getSupportFragmentManager());
@@ -79,6 +91,21 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     }
 
     @Override
+    protected void onStop(){
+        super.onStop();
+
+        // We need an Editor object to make preference changes.
+        // All objects are from android.context.Context
+        SharedPreferences settings = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("silentMode", mSilentMode);
+        editor.putString(getString(R.string.save_ci), "4192547");
+
+        // Commit the edits!
+        editor.commit();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -103,119 +130,14 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     @Override
     public void onSelectedInstructivo(int pressed) {
         if (pressed == 1) {
+            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name),Context.MODE_PRIVATE);
+            String ci = sharedPref.getString(getString(R.string.save_ci), "");
+            String celular = sharedPref.getString(getString(R.string.save_tel),"");
+            Log.i("INFOCI",ci);
+            Log.i("INFOCELULAr",celular);
             pager.setCurrentItem(2);
         }
     }
 
-   /* @Override
-    public boolean onGetHistorial() {
-        Log.i("2727", "onGETHISTORIAL");
-        String accion = CommReq.GET_USER;
-        String appId = "";
-        String celular = "0984000000";
-        String cedula = "44444444";
-        String operadora = "pytgo";
-        String userAutent = "CnsgUser";
-        String passAutent = "123456";
 
-        ApiImpl example = new ApiImpl();
-        String userJson = example.getUserJson();
-
-        /*Log.i("DEBUG","userJson enviado = "+userJson);
-        try {
-            example.post(CommReq.BASE_URL, userJson, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String transactionJsonHistorial = example.getTransaction("historial");
-        Log.i("DEBUG","transactionJsonHistorial enviado = "+transactionJsonHistorial);
-        try {
-            example.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    return false;
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        /*String transactionJsonUnico = example.getTransaction("unico");
-        Log.i("DEBUG","transactionJsonUnico enviado = "+transactionJsonUnico);
-        try {
-            example.post(CommReq.BASE_URL, transactionJsonUnico, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        //String json = example.bowlingJson("Jesse", "Jake");
-        /*try {
-            example.post("http://www.roundsapp.com/post", json, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    Log.i("DEBUG", "FAILURE!!");
-                    Log.i("DEBUG", request.toString());
-                    Log.i("DEBUG", e.getMessage());
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-
-                    if (!response.isSuccessful())
-                        throw new IOException("Unexpected code " + response);
-
-                    Headers responseHeaders = response.headers();
-                    for (int i = 0; i < responseHeaders.size(); i++) {
-                        Log.i("PRUEBA", responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                    }
-
-                    Log.i("PRUEBA", response.body().string());
-
-                }
-            });
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-
-    }*/
 }

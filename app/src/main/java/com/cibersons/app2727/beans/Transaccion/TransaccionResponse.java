@@ -8,7 +8,7 @@ import java.util.List;
 public class TransaccionResponse {
     private String status;
     private String cantidad;
-    private List<Transaccion> data;
+    private TransaccionData data;
 
     public String getStatus() {
         return status;
@@ -26,11 +26,11 @@ public class TransaccionResponse {
         this.cantidad = cantidad;
     }
 
-    public List<Transaccion> getData() {
+    public TransaccionData getData() {
         return data;
     }
 
-    public void setData(List<Transaccion> data) {
+    public void setData(TransaccionData data) {
         this.data = data;
     }
 

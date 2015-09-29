@@ -2,4 +2,15 @@
     <string name="app_name">2727</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+<!--SHARED PREFERENCES-->
+    <string name="prefs_name">com.cibersons.app2727.SHARED_PREFERENCES</string>
+    <string name="save_ci">CI</string>
+    <string name="save_tel">NroCelular</string>
+    <!--REGISTRO-->
+    <string name="nroDocumento">Número de documento</string>
+    <string name="nroCelular">Número de celular</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <!--DEFAULT_VALUE-->
+    <string name="default_value">-1</string>
 </resources>

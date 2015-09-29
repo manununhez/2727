@@ -17,9 +17,9 @@
 
     <LinearLayout
         android:id="@+id/llNumDoc"
-        android:layout_below="@id/tvTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitulo"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="30dp"
@@ -29,29 +29,31 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5sp"
-            android:text="Número de documento"
+            android:text="@string/nroDocumento"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:layout_marginBottom="5dp"/>
+            android:textSize="15sp" />
 
         <EditText
+            android:id="@+id/etNroDocumento"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@android:color/white"
+            android:nextFocusDown="@+id/etNroCelular"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textColorLink="@android:color/black"
-            android:background="@android:color/white" />
+            android:singleLine="true"
+            android:textCursorDrawable="@null" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llNumCel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/llNumDoc"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_below="@id/llNumDoc"
         android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
@@ -60,28 +62,31 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5sp"
-            android:text="Número de celular"
+            android:text="@string/nroCelular"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:layout_marginBottom="5dp"/>
+            android:textSize="15sp" />
 
         <EditText
+            android:id="@+id/etNroCelular"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@android:color/white"
+            android:nextFocusDown="@+id/etNombre"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textColorLink="@android:color/black"
-            android:background="@android:color/white" />
+            android:inputType="phone"
+            android:singleLine="true"
+            android:textCursorDrawable="@null" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_below="@id/llNumCel"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="30dp"
         android:gravity="center_vertical"
@@ -91,29 +96,31 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5sp"
-            android:text="Nombre"
+            android:text="@string/nombre"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:layout_marginBottom="5dp"/>
+            android:textSize="15sp" />
 
         <EditText
+            android:id="@+id/etNombre"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@android:color/white"
+            android:nextFocusDown="@+id/etApellido"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textColorLink="@android:color/black"
-            android:background="@android:color/white" />
+            android:singleLine="true"
+            android:textCursorDrawable="@null" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llApellido"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/llNombre"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_below="@id/llNombre"
         android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
@@ -122,66 +129,68 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5sp"
-            android:text="Apellido"
+            android:text="@string/apellido"
             android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:layout_marginBottom="5dp"/>
+            android:textSize="15sp" />
 
         <EditText
+            android:id="@+id/etApellido"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@android:color/white"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textColorLink="@android:color/black"
-            android:background="@android:color/white" />
+            android:singleLine="true"
+            android:textCursorDrawable="@null" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/btnSendSMS"
+        android:id="@+id/llRegistrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llText"
-        android:orientation="vertical"
-        android:layout_marginBottom="20dp"
-        android:paddingLeft="20dp"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/llText"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/menu_left_barra_espacio"/>
+            android:src="@drawable/menu_left_barra_espacio" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1">
+
             <TextView
                 android:layout_width="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_height="wrap_content"
-                android:text="REGISTRAR"
-                android:textColor="@android:color/white"
-                android:gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="0.9"
-                />
+                android:gravity="center_horizontal"
+                android:text="REGISTRAR"
+                android:textColor="@android:color/white" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/menu_item_arrow"
                 android:layout_gravity="left|center_vertical"
-                />
+                android:src="@drawable/menu_item_arrow" />
         </LinearLayout>
 
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/menu_left_barra_espacio"/>
+            android:src="@drawable/menu_left_barra_espacio" />
 
 
     </LinearLayout>
