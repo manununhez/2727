@@ -46,13 +46,8 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
         setContentView(R.layout.activity_main);
 
         // Restore preferences
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name), 0);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.save_ci), getString(R.string.default_value));
-        editor.putString(getString(R.string.save_tel), getString(R.string.default_value) );
-        editor.commit();
-         mSilentMode = sharedPref.getBoolean("silentMode", false);
 
+        sharedPreferencesSettingsControl();
 
         pager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new TabAdapter(getResources(), getSupportFragmentManager());
@@ -88,6 +83,20 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
         adapter.addFragment(InstructivoFragment.newInstance("Instructivo"), "");
         adapter.addFragment(PerfilFragment.newInstance("Perfil"), "");
         viewPager.setAdapter(adapter);
+    }
+
+    private void sharedPreferencesSettingsControl(){
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//
+//        String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
+//        String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
+//
+////
+//        editor.putString(getString(R.string.save_ci), getString(R.string.default_value));
+//        editor.putString(getString(R.string.save_tel), getString(R.string.default_value) );
+//        editor.commit();
+        mSilentMode = sharedPref.getBoolean("silentMode", false);
     }
 
     @Override
@@ -131,11 +140,15 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     public void onSelectedInstructivo(int pressed) {
         if (pressed == 1) {
             SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name),Context.MODE_PRIVATE);
-            String ci = sharedPref.getString(getString(R.string.save_ci), "");
-            String celular = sharedPref.getString(getString(R.string.save_tel),"");
+            String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
+            String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
+            if(!ci.equals(getString(R.string.default_value))){
+                //enviar SMS
+            }else{
+                pager.setCurrentItem(2);
+            }
             Log.i("INFOCI",ci);
             Log.i("INFOCELULAr",celular);
-            pager.setCurrentItem(2);
         }
     }
 
