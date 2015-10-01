@@ -1,5 +1,6 @@
 package com.cibersons.app2727;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.cibersons.app2727.adapter.TabAdapter;
 import com.cibersons.app2727.comm.CommReq;
@@ -18,6 +21,7 @@ import com.cibersons.app2727.fragment.HistorialFragment;
 import com.cibersons.app2727.fragment.InstructivoFragment;
 import com.cibersons.app2727.fragment.MainFragment;
 import com.cibersons.app2727.fragment.PerfilFragment;
+import com.cibersons.app2727.utils.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.Request;
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     };
 
     private boolean mSilentMode;
+    private int exit =0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +54,7 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
         // Restore preferences
 
         sharedPreferencesSettingsControl();
-
+        exit = 0;
         pager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new TabAdapter(getResources(), getSupportFragmentManager());
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -119,6 +125,25 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Dialog dialog = Utils.customAlertDialogWithOptions(this, "Saliendo de la aplicacion", "Esta seguro que desea salir?");
+        final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
+        btnAceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exit = 1;
+                finish();
+            }
+        });
+        dialog.show();
+        if (exit == 1){
+            super.onBackPressed();
+
+        }
     }
 
     @Override

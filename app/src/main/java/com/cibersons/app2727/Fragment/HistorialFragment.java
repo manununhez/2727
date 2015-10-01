@@ -1,6 +1,7 @@
 package com.cibersons.app2727.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,11 +22,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.cibersons.app2727.App2727;
 import com.cibersons.app2727.R;
 import com.cibersons.app2727.beans.Transaccion.Transaccion;
 import com.cibersons.app2727.beans.Transaccion.TransaccionResponse;
 import com.cibersons.app2727.comm.ApiImpl;
 import com.cibersons.app2727.comm.CommReq;
+import com.cibersons.app2727.utils.Utils;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -42,14 +45,12 @@ import java.util.List;
 /**
  * Created by Manuel on 8/19/2015.
  */
-public class HistorialFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HistorialFragment extends RootFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static HistorialFragment instance;
 
     SwipeRefreshLayout swipeLayout;
-    // OnHistorialListener mCallback;
     private CardView cardView;
-    private ArrayList<String> historialList;
     private RecyclerView recyclerView;
     private TransaccionResponse transaccionResponse;
 
@@ -75,40 +76,20 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
         cardView = (CardView) rootView.findViewById(R.id.card_view);
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-        //swipeLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
-        /*swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
-                        swipeLayout.setRefreshing(false);
-                    }
-                }, 5000);
-            }
-        });*/
-        /*swipeLayout.setColorScheme(android.R.color.holo_green_dark,
-                android.R.color.holo_red_dark,
-                android.R.color.holo_blue_dark,
-                android.R.color.holo_orange_dark);*/
+
         return rootView;
     }
 
-    private void setupRecyclerView(RecyclerView recyclerView){
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        //recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), historialList));
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        onGetHistorial();
     }
 
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//
-//        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                onGetHistorial();
-//            }
-//        });
-//    }
+    private void setupRecyclerView(RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+    }
+
 
     @Override
     public void onResume() {
@@ -117,7 +98,6 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     public void onGetHistorial() {
-        Log.i("2727", "onGETHISTORIAL");
         String accion = CommReq.GET_USER;
         String appId = "";
         String celular = "0984000000";
@@ -127,129 +107,52 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
         String passAutent = "123456";
 
         ApiImpl postOkHttp = new ApiImpl();
-        String userJson = postOkHttp.getUserJson();
-
-        /*Log.i("DEBUG","userJson enviado = "+userJson);
-        try {
-            example.post(CommReq.BASE_URL, userJson, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
         String transactionJsonHistorial = postOkHttp.getTransaction("historial");
-        Log.i("DEBUG", "transactionJsonHistorial enviado = " + transactionJsonHistorial);
-        try {
-            postOkHttp.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                }
+        App2727.Logger.i("Mensaje enviado = " + transactionJsonHistorial);
 
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
 
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    try {
-//        String prueba = "{\"status\":\"OK\",\"cantidad\":\"10\",\"data\":{\"transaccion\":[{\"idTransaccion\": \"26\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"25\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"24\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"23\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"22\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"21\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"20\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"19\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"18\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"},{\"idTransaccion\": \"17\", \"mensaje\": \"CI 44444444 Su saldo es 896,192 Gs.-\"}]}}";
-                        JSONObject jsonObject = new JSONObject(responseStr);
-                        Gson gson = new Gson();
-
-                        transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
-
-//                        JSONArray jsonArray = new JSONArray(jsonObject.getString("data"));
-//                        List<Transaccion> list = new ArrayList<Transaccion>();
-//                        for (int i=0; i<jsonArray.length(); i++) {
-//                            list.add(((JSONObject) jsonArray.getString(i)).getString("idTransaccion"));
-//                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
-
-                                swipeLayout.setRefreshing(false);
-
-                            }
-                        });
-                        Log.d("DEBUG",transaccionResponse.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        if (Utils.haveNetworkConnection(getActivity().getApplicationContext())) {
+            try {
+                postOkHttp.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                        App2727.Logger.e(e.getMessage());
                     }
 
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        String responseStr = response.body().string();
+                        App2727.Logger.i(responseStr);
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseStr);
+                            Gson gson = new Gson();
 
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+                            transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
+                                    swipeLayout.setRefreshing(false);
+
+                                }
+                            });
+                            Log.d("DEBUG", transaccionResponse.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            App2727.Logger.e(e.getMessage());
+                        }
+
+
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                App2727.Logger.e(e.getMessage());
+            }
+        } else {
+            showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
         }
-        /*String transactionJsonUnico = example.getTransaction("unico");
-        Log.i("DEBUG","transactionJsonUnico enviado = "+transactionJsonUnico);
-        try {
-            example.post(CommReq.BASE_URL, transactionJsonUnico, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        //String json = example.bowlingJson("Jesse", "Jake");
-        /*try {
-            example.post("http://www.roundsapp.com/post", json, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    Log.i("DEBUG", "FAILURE!!");
-                    Log.i("DEBUG", request.toString());
-                    Log.i("DEBUG", e.getMessage());
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String responseStr = response.body().string();
-                    Log.i("DEBUG", "SUCESS!!");
-                    Log.i("DEBUG", responseStr);
-                    Log.i("DEBUG", response.message());
-
-                    if (!response.isSuccessful())
-                        throw new IOException("Unexpected code " + response);
-
-                    Headers responseHeaders = response.headers();
-                    for (int i = 0; i < responseHeaders.size(); i++) {
-                        Log.i("PRUEBA", responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                    }
-
-                    Log.i("PRUEBA", response.body().string());
-
-                }
-            });
-        } catch (IOException e){
-            e.printStackTrace();
-        }*/
-
 
     }
 
@@ -284,11 +187,8 @@ public class HistorialFragment extends Fragment implements SwipeRefreshLayout.On
             }
         }
 
-//        public String getValueAt(int position) {
-//            return mValues.get(position);
-//        }
 
-        public HistorialRecyclerViewAdapter(Context context,List<Transaccion> items) {
+        public HistorialRecyclerViewAdapter(Context context, List<Transaccion> items) {
             context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
             mBackground = mTypedValue.resourceId;
             mValues = items;

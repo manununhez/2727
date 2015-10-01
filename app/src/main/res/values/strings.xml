@@ -6,6 +6,8 @@
     <string name="prefs_name">com.cibersons.app2727.SHARED_PREFERENCES</string>
     <string name="save_ci">CI</string>
     <string name="save_tel">NroCelular</string>
+    <string name="save_nombre">Nombre</string>
+    <string name="save_apellido">Apellido</string>
     <!--REGISTRO-->
     <string name="nroDocumento">Número de documento</string>
     <string name="nroCelular">Número de celular</string>
