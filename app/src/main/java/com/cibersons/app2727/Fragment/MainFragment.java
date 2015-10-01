@@ -3,13 +3,16 @@ package com.cibersons.app2727.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.cibersons.app2727.R;
@@ -93,19 +96,48 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                dialog.setContentView(R.layout.custom_dialog);
+                final SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.prefs_name),Context.MODE_PRIVATE);
+                String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
+                String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
+                Log.i("INFOCI",ci);
+                Log.i("INFOCELULAr",celular);
+                if(ci.equals(getString(R.string.default_value))){
+                    //enviar SMS
+                    dialog.setContentView(R.layout.custom_dialog_ingreso_ci);
+                    final EditText etCI = (EditText) dialog.findViewById(R.id.etCI);
+                    final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
+                    final LinearLayout btnCancelar = (LinearLayout) dialog.findViewById(R.id.btn_cancelar);
+                    btnAceptar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(getString(R.string.save_ci), etCI.getText().toString());
+                            editor.commit();
+                            dialog.dismiss();
+                        }
+                    });
+
+                    btnCancelar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                }else{
+                    dialog.setContentView(R.layout.custom_dialog);
+                    final LinearLayout dialogButton = (LinearLayout) dialog.findViewById(R.id.btn_dialog);
+                    dialogButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // if button is clicked, close the custom dialog
+                            mCallback.onSelectedInstructivo(PRESSED);
+                            dialog.dismiss();
+                        }
+                    });
+                }
+
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-                final LinearLayout dialogButton = (LinearLayout) dialog.findViewById(R.id.btn_dialog);
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // if button is clicked, close the custom dialog
-                        mCallback.onSelectedInstructivo(PRESSED);
-                        dialog.dismiss();
-                    }
-                });
-
                 dialog.show();
 
 //                String number = "0982484860";

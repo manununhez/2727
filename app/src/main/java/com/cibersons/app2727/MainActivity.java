@@ -139,16 +139,16 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     @Override
     public void onSelectedInstructivo(int pressed) {
         if (pressed == 1) {
-            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name),Context.MODE_PRIVATE);
-            String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
-            String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
-            if(!ci.equals(getString(R.string.default_value))){
-                //enviar SMS
-            }else{
+//            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name),Context.MODE_PRIVATE);
+//            String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
+//            String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
+//            if(!ci.equals(getString(R.string.default_value))){
+//                //enviar SMS
+//            }else{
                 pager.setCurrentItem(2);
-            }
-            Log.i("INFOCI",ci);
-            Log.i("INFOCELULAr",celular);
+//            }
+//            Log.i("INFOCI",ci);
+//            Log.i("INFOCELULAr",celular);
         }
     }
 

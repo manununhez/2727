@@ -76,11 +76,6 @@ public class PerfilFragment extends Fragment {
                         @Override
                         public void onResponse(Response response) throws IOException {
                             Context context = getActivity().getApplicationContext();
-                            SharedPreferences sharedPref = context.getSharedPreferences(
-                                    getString(R.string.prefs_name), Context.MODE_PRIVATE);
-
-                            SharedPreferences.Editor editor = sharedPref.edit();
-
 
                             String responseStr = response.body().string();
                             getActivity().runOnUiThread(new Runnable() {
@@ -91,14 +86,19 @@ public class PerfilFragment extends Fragment {
                             });
                             Log.i("DEBUG", "SUCESS!!");
                             Log.i("DEBUG", responseStr);
+                            SharedPreferences sharedPref = context.getSharedPreferences(
+                                    getString(R.string.prefs_name), Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            Log.i("VAlues",etNroDocumento.getText().toString());
+                            Log.i("VAlues",etNroCelular.getText().toString());
+                            editor.putString(getString(R.string.save_ci), etNroDocumento.getText().toString() );
+                            editor.putString(getString(R.string.save_tel), etNroCelular.getText().toString() );
+                            editor.commit();
                             try {
                                 JSONObject jsonObject = new JSONObject(responseStr);
                                 Gson gson = new Gson();
 
                                 userResponse = gson.fromJson(String.valueOf(jsonObject), UserResponse.class);
-                                editor.putString(getString(R.string.save_ci), etNroDocumento.getText().toString() );
-                                editor.putString(getString(R.string.save_tel), etNroCelular.getText().toString() );
-                                editor.commit();
 
                                 Log.d("DEBUG", userResponse.toString());
                             } catch (JSONException e) {
