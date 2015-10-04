@@ -14,5 +14,5 @@
     <string name="nombre">Nombre</string>
     <string name="apellido">Apellido</string>
     <!--DEFAULT_VALUE-->
-    <string name="default_value">-1</string>
+    <string name="default_value"></string>
 </resources>

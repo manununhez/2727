@@ -76,25 +76,25 @@ public class Utils {
         return dialog;
     }
 
-    public static void customAlertDialogCI(final Activity activity) {
+    public static Dialog customAlertDialogCI(final Activity activity) {
         final Dialog dialog = new Dialog(activity);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setCancelable(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_dialog_ingreso_ci);
 
-        final EditText etCI = (EditText) dialog.findViewById(R.id.etCI);
-        final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
+//        final EditText etCI = (EditText) dialog.findViewById(R.id.etCI);
+//        final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
         final LinearLayout btnCancelar = (LinearLayout) dialog.findViewById(R.id.btn_cancelar);
-        btnAceptar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editor = activity.getSharedPreferences(activity.getString(R.string.prefs_name), Context.MODE_PRIVATE).edit();
-                editor.putString(activity.getString(R.string.save_ci), etCI.getText().toString());
-                editor.commit();
-                dialog.dismiss();
-            }
-        });
+//        btnAceptar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences.Editor editor = activity.getSharedPreferences(activity.getString(R.string.prefs_name), Context.MODE_PRIVATE).edit();
+//                editor.putString(activity.getString(R.string.save_ci), etCI.getText().toString());
+//                editor.commit();
+//                dialog.dismiss();
+//            }
+//        });
 
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +103,7 @@ public class Utils {
             }
         });
 
-        dialog.show();
+        return dialog;
     }
 
     public static Dialog customAlertDialogInstructivo(final Activity activity) {
@@ -113,6 +113,12 @@ public class Utils {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_dialog);
         return dialog;
+    }
+
+    public static SharedPreferences getSharedPreferences(Activity activity){
+       SharedPreferences sharedPreferences =  activity.getSharedPreferences(activity.getString(R.string.prefs_name), Context.MODE_PRIVATE);
+        return sharedPreferences;
+
     }
 
     /**

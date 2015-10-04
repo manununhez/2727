@@ -1,5 +1,6 @@
 package com.cibersons.app2727.comm;
 
+import com.cibersons.app2727.App2727;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
@@ -9,6 +10,7 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by manunez on 24/09/2015.
@@ -17,7 +19,15 @@ public class ApiImpl {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client;
+
+    public ApiImpl() throws Exception {
+        App2727.Logger.i("ApiImpl() CREADO");
+        client = new OkHttpClient();
+        client.setConnectTimeout(10, TimeUnit.SECONDS);
+        client.setWriteTimeout(10, TimeUnit.SECONDS);
+        client.setReadTimeout(15, TimeUnit.SECONDS);
+    }
 
     public Call post(String url, String json, Callback callback) throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
@@ -39,7 +49,7 @@ public class ApiImpl {
         return call;
     }*/
 
-    public String bowlingJson(String player1, String player2) {
+    public static String bowlingJson(String player1, String player2) {
         return "{'winCondition':'HIGH_SCORE',"
                 + "'name':'Bowling',"
                 + "'round':4,"
@@ -51,21 +61,22 @@ public class ApiImpl {
                 + "]}";
     }
 
-    public String getUserJson() {
+    public static String getUserJson() {
         return "{\"accion\":\"getUser\",\"appId\":\"\"," +
                 "\"celular\":\"0984000000\",\"cedula\":\"44444444\"," +
                 "\"operadora\":\"pytgo\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
     }
 
-    public String getTransaction(String tipoConsulta){
+    public static String getTransaction(String tipoConsulta){
         return "{\"accion\":\"getTransaccion\",\"appId\":\"\"," +
                 "\"celular\":\"0984000000\",\"cedula\":\"44444444\"," +
                 "\"tipoConsulta\": \""+tipoConsulta+"\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
     }
 
-    public String putUserObject(String nroCelular, String nroDocumento, String nombreApellido){
+    public static String putUserObject(String nroCelular, String nroDocumento, String nombreApellido){
         return "{\"accion\":\"putUser\",\"appId\":\"\"," +
-                "\"celular\":\""+nroCelular+"\",\"cedula\":\""+nroDocumento+"\",\"nombre\":\""+nombreApellido+"\",\"operadora\":\"pytgo\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
+                "\"celular\":\""+nroCelular+"\",\"cedula\":\""+nroDocumento+"\",\"nombre\":\""+nombreApellido+"\"," +
+                "\"operadora\":\"pytgo\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
     }
 
 }

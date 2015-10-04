@@ -44,6 +44,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
+            android:inputType="number"
             android:textCursorDrawable="@null" />
     </LinearLayout>
 

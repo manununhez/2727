@@ -1,6 +1,9 @@
 package com.cibersons.app2727;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**

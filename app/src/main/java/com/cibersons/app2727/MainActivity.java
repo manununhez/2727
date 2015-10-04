@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -93,32 +94,39 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
 
     private void sharedPreferencesSettingsControl(){
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//
-//        String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
-//        String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
-//
-////
-//        editor.putString(getString(R.string.save_ci), getString(R.string.default_value));
-//        editor.putString(getString(R.string.save_tel), getString(R.string.default_value) );
-//        editor.commit();
         mSilentMode = sharedPref.getBoolean("silentMode", false);
+//        String celular = sharedPref.getString(getString(R.string.save_tel), getString(R.string.default_value));
+//
+//        App2727.Logger.i("Celular = " + celular);
+//        if(celular.equals(getString(R.string.default_value))){
+//            String nroTel = getMy10DigitPhoneNumber();
+//            App2727.Logger.i("Nro de cel = " + nroTel);
+//            SharedPreferences.Editor editor = sharedPref.edit();
+//            editor.putString(getString(R.string.save_tel), nroTel);
+//            editor.commit();
+//        }
     }
 
-    @Override
-    protected void onStop(){
-        super.onStop();
+//    private String getMyPhoneNumber(){
+//        TelephonyManager mTelephonyMgr;
+//        mTelephonyMgr = (TelephonyManager)
+//                getSystemService(Context.TELEPHONY_SERVICE);
+//
+//        App2727.Logger.i("getNetworkOperatorName obtenido = "+mTelephonyMgr.getNetworkOperatorName());
+//        App2727.Logger.i("getSimOperatorName obtenido = "+mTelephonyMgr.getSimOperatorName());
+//        App2727.Logger.i("getLine1Number obtenido = "+mTelephonyMgr.getLine1Number());
+//        App2727.Logger.i("getPhoneType obtenido = "+mTelephonyMgr.getPhoneType());
+//        App2727.Logger.i("getDeviceId obtenido = "+mTelephonyMgr.getDeviceId());
+//        return mTelephonyMgr.getLine1Number();
+//    }
+//
+//    private String getMy10DigitPhoneNumber(){
+//        String s = getMyPhoneNumber();
+//
+//        return s.substring(2);
+//    }
 
-        // We need an Editor object to make preference changes.
-        // All objects are from android.context.Context
-        SharedPreferences settings = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("silentMode", mSilentMode);
-        editor.putString(getString(R.string.save_ci), "4192547");
 
-        // Commit the edits!
-        editor.commit();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

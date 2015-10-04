@@ -1,13 +1,7 @@
 package com.cibersons.app2727.fragment;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,11 +11,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.cibersons.app2727.App2727;
 import com.cibersons.app2727.R;
 import com.cibersons.app2727.beans.Transaccion.Transaccion;
@@ -34,12 +26,10 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,15 +66,15 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
         cardView = (CardView) rootView.findViewById(R.id.card_view);
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-
+        onGetHistorial();
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        onGetHistorial();
-    }
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        onGetHistorial();
+//    }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
@@ -94,7 +84,7 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
     @Override
     public void onResume() {
         super.onResume();
-
+//        onGetHistorial();
     }
 
     public void onGetHistorial() {
@@ -106,17 +96,24 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
         String userAutent = "CnsgUser";
         String passAutent = "123456";
 
-        ApiImpl postOkHttp = new ApiImpl();
-        String transactionJsonHistorial = postOkHttp.getTransaction("historial");
+        String transactionJsonHistorial = ApiImpl.getTransaction("historial");
+
         App2727.Logger.i("Mensaje enviado = " + transactionJsonHistorial);
 
 
         if (Utils.haveNetworkConnection(getActivity().getApplicationContext())) {
             try {
-                postOkHttp.post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
+                new ApiImpl().post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
                         App2727.Logger.e(e.getMessage());
+                        showDialogOk("Error!", e.getMessage());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeLayout.setRefreshing(false);
+                            }
+                        });
                     }
 
                     @Override
@@ -141,16 +138,37 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
                         } catch (JSONException e) {
                             e.printStackTrace();
                             App2727.Logger.e(e.getMessage());
+                            showDialogOk("Error!", e.getMessage());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    swipeLayout.setRefreshing(false);
+                                }
+                            });
                         }
 
 
                     }
                 });
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 App2727.Logger.e(e.getMessage());
+//                showDialogOk("Error!", e.getMessage());
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeLayout.setRefreshing(false);
+                    }
+                });
             }
         } else {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    swipeLayout.setRefreshing(false);
+                }
+            });
             showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
         }
 

@@ -34,6 +34,7 @@
             android:id="@+id/etCI"
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:inputType="number"
             android:textCursorDrawable="@null"
             android:background="@android:color/darker_gray"/>
 

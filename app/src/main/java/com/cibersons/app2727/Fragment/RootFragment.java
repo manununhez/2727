@@ -18,12 +18,4 @@ public class RootFragment extends Fragment {
         });
     }
 
-    public void showDialogWithOptions(final String title, final String msg) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Utils.customAlertDialogWithOptions(getActivity(), title, msg);
-            }
-        });
-    }
 }
