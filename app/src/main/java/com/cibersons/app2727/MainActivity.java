@@ -1,8 +1,14 @@
 package com.cibersons.app2727;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -14,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.cibersons.app2727.adapter.TabAdapter;
 import com.cibersons.app2727.comm.CommReq;
@@ -22,6 +30,8 @@ import com.cibersons.app2727.fragment.HistorialFragment;
 import com.cibersons.app2727.fragment.InstructivoFragment;
 import com.cibersons.app2727.fragment.MainFragment;
 import com.cibersons.app2727.fragment.PerfilFragment;
+import com.cibersons.app2727.googleCloudNotification.QuickstartPreferences;
+import com.cibersons.app2727.googleCloudNotification.RegistrationIntentService;
 import com.cibersons.app2727.utils.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
@@ -47,11 +57,16 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     private boolean mSilentMode;
     private int exit =0;
 
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Manejo del cloud notification
+        cloudManagement();
         // Restore preferences
 
         sharedPreferencesSettingsControl();
@@ -81,6 +96,45 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
 //            }
 //        });
 
+    }
+
+    private void cloudManagement(){
+        final ProgressDialog  progressDialog = Utils.getProgressDialog(this, "Opciones del cloud", "Espere un momento por favor...");
+        progressDialog.show();
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                progressDialog.dismiss();
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                    App2727.Logger.e(getString(R.string.gcm_send_message));
+                } else {
+                    App2727.Logger.e(getString(R.string.token_error_message));
+                }
+            }
+        };
+
+        if (Utils.checkPlayServices(this)) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
     }
 
     private void setupViewPager(ViewPager viewPager) {
