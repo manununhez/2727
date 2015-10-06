@@ -5,10 +5,16 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/btnSMS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND SMS"/>
     <LinearLayout
         android:id="@+id/llText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_weight="0.1"
         android:orientation="vertical">
 
@@ -17,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="150dp"
             android:text="BIENVENIDO"
             android:textColor="@android:color/white"
             android:textSize="30sp" />
@@ -36,7 +41,7 @@
         <LinearLayout
             android:id="@+id/llTextoBienvenida"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/txApp2727"
             android:background="@android:color/darker_gray"
             android:gravity="center_horizontal|center_vertical"
@@ -46,6 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Para consultar su saldo"
+                android:layout_gravity="top"
+
                 android:textColor="@android:color/white" />
 
             <TextView

@@ -6,6 +6,7 @@ package com.cibersons.app2727.beans.Transaccion;
 public class Transaccion {
     private String idTransaccion;
     private String mensaje;
+    private String fecha;
 
     public Transaccion(String idTransaccion, String mensaje) {
         this.idTransaccion = idTransaccion;
@@ -28,12 +29,21 @@ public class Transaccion {
         this.mensaje = mensaje;
     }
 
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+
     @Override
     public String toString() {
         return "Transaccion{" +
                 "idTransaccion='" + idTransaccion + '\'' +
                 ", mensaje='" + mensaje + '\'' +
+                ", fecha='" + fecha + '\'' +
                 '}';
     }
-
 }

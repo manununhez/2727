@@ -3,7 +3,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
-    android:layout_width="match_parent"
+    android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     app:cardBackgroundColor="@android:color/white"
@@ -33,6 +33,7 @@
         <EditText
             android:id="@+id/etCI"
             android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
             android:layout_height="30dp"
             android:inputType="number"
             android:textCursorDrawable="@null"
@@ -41,6 +42,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/btn_aceptar"
@@ -53,13 +55,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ACEPTAR"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
                     android:textColor="@color/redapp27" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/menu_item_arrow_red" />
+                <!--<ImageView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="5dp"-->
+                    <!--android:src="@drawable/menu_item_arrow_red" />-->
             </LinearLayout>
 
             <LinearLayout
@@ -74,13 +78,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CANCELAR"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
                     android:textColor="@color/redapp27" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/menu_item_arrow_red" />
+                <!--<ImageView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="5dp"-->
+                    <!--android:src="@drawable/menu_item_arrow_red" />-->
             </LinearLayout>
         </LinearLayout>
 

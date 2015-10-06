@@ -17,6 +17,7 @@
 package com.cibersons.app2727.googleCloudNotification;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -24,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.cibersons.app2727.R;
+import com.cibersons.app2727.utils.Utils;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -51,6 +53,7 @@ public class RegistrationIntentService extends IntentService {
             InstanceID instanceID = InstanceID.getInstance(this); //APP_ID
             String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
             // [END get_token]
             Log.i(TAG, "GCM Registration Token: " + token);
 
@@ -86,6 +89,9 @@ public class RegistrationIntentService extends IntentService {
      */
     private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(getString(R.string.token),token).commit();
+
     }
 
     /**

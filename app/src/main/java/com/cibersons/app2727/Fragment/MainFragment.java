@@ -11,12 +11,14 @@ import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cibersons.app2727.App2727;
 import com.cibersons.app2727.R;
+import com.cibersons.app2727.beans.Transaccion.TransaccionResponse;
 import com.cibersons.app2727.beans.User.UserResponse;
 import com.cibersons.app2727.comm.ApiImpl;
 import com.cibersons.app2727.comm.CommReq;
@@ -47,7 +49,10 @@ public class MainFragment extends RootFragment {
 
     private static int PRESSED = 1;
     OnHeadlineSelectedListener mCallback;
+    private TransaccionResponse transaccionResponse;
 
+    private SharedPreferences sharedPreferences;
+private Button btnSMS;
     // Container Activity must implement this interface
     public interface OnHeadlineSelectedListener {
         public void onSelectedInstructivo(int pressed);
@@ -91,16 +96,21 @@ public class MainFragment extends RootFragment {
         llTextoBienvenida = (LinearLayout) rootView.findViewById(R.id.llTextoBienvenida);
         llTextoBienvenida.getBackground().setAlpha(80);
 
-
+        btnSMS = (Button) rootView.findViewById(R.id.btnSMS);
+        btnSMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
+        sharedPreferences = Utils.getSharedPreferences(getActivity());
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
-                String ci = sharedPref.getString(getString(R.string.save_ci), getString(R.string.default_value));
+                String ci = sharedPreferences.getString(getString(R.string.save_ci), getString(R.string.default_value));
 
                 if (ci.equals(getString(R.string.default_value))) {
-                    //enviar SMS
                     final Dialog dialog = Utils.customAlertDialogCI(getActivity());
                     final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
                     etCI = (EditText) dialog.findViewById(R.id.etCI);
@@ -108,6 +118,7 @@ public class MainFragment extends RootFragment {
                         @Override
                         public void onClick(View view) {
                             registrarUsuario();
+
                             dialog.dismiss();
                         }
                     });
@@ -115,19 +126,10 @@ public class MainFragment extends RootFragment {
                 } else {
 
                     //enviar SMS
+                    sendMessagePrueba();
 //                    sendMessage(); -----CONTROLAR QUE EXISTA EL NUMERO DE CELULAR, sino EXISTE, enviar a la pagina PERFIL
                     //Si no esta suscrito, mostrar instructivo
-                    final Dialog dialog = Utils.customAlertDialogInstructivo(getActivity());
-                    final LinearLayout dialogButton = (LinearLayout) dialog.findViewById(R.id.btn_dialog);
-                    dialogButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // if button is clicked, close the custom dialog
-                            dialog.dismiss();
-                            mCallback.onSelectedInstructivo(PRESSED);
-                        }
-                    });
-                    dialog.show();
+
                 }
 
 
@@ -139,12 +141,9 @@ public class MainFragment extends RootFragment {
 
 
     private void registrarUsuario() {
-        SharedPreferences sharedPreferences = Utils.getSharedPreferences(getActivity());
         String numeroDocumento = etCI.getText().toString();
-        String nombre = sharedPreferences.getString(getString(R.string.save_nombre), getString(R.string.default_value));
-        String apellido = sharedPreferences.getString(getString(R.string.save_apellido), getString(R.string.default_value));
-        String nombreApellido = nombre + " " + apellido;
-        String numeroCelular = sharedPreferences.getString(getString(R.string.save_tel), getString(R.string.default_value));
+        String nombreApellido = sharedPreferences.getString(getString(R.string.save_nombre), getString(R.string.default_value));
+        String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
 
         if (numeroDocumento.equals(getString(R.string.default_value))) {
             showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
@@ -160,7 +159,7 @@ public class MainFragment extends RootFragment {
 //                showDialogOk("Error!", "XXXXXXXX");
 //                App2727.Logger.e(e.getMessage());
 //            }
-            String putUserJson = ApiImpl.putUserObject(numeroCelular, numeroDocumento, nombreApellido);
+            String putUserJson = ApiImpl.putUserObject(numeroDocumento, nombreApellido, appID);
             App2727.Logger.i("Datos enviados:" + putUserJson);
             if (Utils.haveNetworkConnection(getActivity())) {
                 try {
@@ -188,6 +187,7 @@ public class MainFragment extends RootFragment {
                                 if (userResponse.getStatus().equals("OK")) {
                                     saveSharedPreferencesData();
                                     showDialogOk(userResponse.getStatus(), "Usuario registrado correctamente!");
+                                    sendMessagePrueba();
                                 } else {
                                     showDialogOk(userResponse.getStatus(), userResponse.getData().getNombreUsuario());
                                 }
@@ -217,14 +217,14 @@ public class MainFragment extends RootFragment {
     }
 
     private void saveSharedPreferencesData() {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(getActivity().getString(R.string.prefs_name), Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(getActivity().getString(R.string.save_ci), etCI.getText().toString());
-        editor.commit();
+        editor.apply();
     }
 
     private void sendMessage() {
-        String number = "0982484860";
-        String sms = "prueba";
+        String number = "121";
+        String sms = "s";
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -237,6 +237,109 @@ public class MainFragment extends RootFragment {
                     Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+    }
+
+    private void sendMessagePrueba() {
+        final String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
+
+        final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
+        progressDialog.show();
+        try {
+            App2727.Logger.i("MO ENVIADO");
+            new ApiImpl().postWithParameters(CommReq.BASE_URL_MO, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    progressDialog.dismiss();
+                    showDialogOk("Error!", e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String responseStr = response.body().string();
+                    progressDialog.dismiss();
+//                    showDialogOk("OK!", responseStr);
+                    String json = ApiImpl.getTransaction("unico", appID);
+                    App2727.Logger.i("Respuesta = " + responseStr);
+                    App2727.Logger.i("Mensaje enviado" + json);
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
+//                            progressDialog.show();
+//                        }
+//                    });
+
+                    try {
+                        new ApiImpl().post(CommReq.BASE_URL, json, new Callback() {
+                            @Override
+                            public void onFailure(Request request, IOException e) {
+                                App2727.Logger.e(e.getMessage());
+                            }
+
+                            @Override
+                            public void onResponse(Response response) throws IOException {
+//                                progressDialog.dismiss();
+                                String responseStr = response.body().string();
+                                App2727.Logger.i("Respuesta = " + responseStr);
+                                JSONObject jsonObject = null;
+                                try {
+                                    jsonObject = new JSONObject(responseStr);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Gson gson = new Gson();
+
+                                transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
+
+                                showDialogOk("OK!", transaccionResponse.getData().getTransaccion().get(0).getMensaje());
+                                String putViewTransString = ApiImpl.putViewTrans(transaccionResponse.getData().getTransaccion().get(0).getIdTransaccion(), appID);
+                                App2727.Logger.i("Mensaje enviado = "+putViewTransString);
+                                try {
+                                    new ApiImpl().post(CommReq.BASE_URL, putViewTransString, new Callback() {
+                                        @Override
+                                        public void onFailure(Request request, IOException e) {
+                                            App2727.Logger.e(e.getMessage());
+
+                                        }
+
+                                        @Override
+                                        public void onResponse(Response response) throws IOException {
+                                            String responseStr = response.body().string();
+                                            App2727.Logger.i("Respuesta = " + responseStr);
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //Cuando no esta registrado
+                    //irAInstructivo();
+                }
+            });
+        } catch (Exception e) {
+            progressDialog.dismiss();
+            e.printStackTrace();
+            showDialogOk("Error!", e.getMessage());
+        }
+    }
+
+    private void irAInstructivo() {
+        final Dialog dialog = Utils.customAlertDialogInstructivo(getActivity());
+        final LinearLayout dialogButton = (LinearLayout) dialog.findViewById(R.id.btn_dialog);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // if button is clicked, close the custom dialog
+                dialog.dismiss();
+                mCallback.onSelectedInstructivo(PRESSED);
+            }
+        });
+        dialog.show();
     }
 
 

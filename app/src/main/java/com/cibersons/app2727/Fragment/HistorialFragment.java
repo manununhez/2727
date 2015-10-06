@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Created by Manuel on 8/19/2015.
  */
-public class HistorialFragment extends RootFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HistorialFragment extends RootFragment {//implements SwipeRefreshLayout.OnRefreshListener {
 
     private static HistorialFragment instance;
 
@@ -43,7 +43,7 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
     private CardView cardView;
     private RecyclerView recyclerView;
     private TransaccionResponse transaccionResponse;
-
+private String ci;
 
     public static HistorialFragment newInstance(String title) {
         if (instance == null) {
@@ -64,9 +64,11 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         setupRecyclerView(recyclerView);
         cardView = (CardView) rootView.findViewById(R.id.card_view);
-        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
-        onGetHistorial();
+//        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+//        swipeLayout.setOnRefreshListener(this);
+
+         ci = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.save_ci),getString(R.string.default_value));
+        if(!ci.equals(getString(R.string.default_value))) onGetHistorial();
         return rootView;
     }
 
@@ -84,19 +86,14 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
     @Override
     public void onResume() {
         super.onResume();
-//        onGetHistorial();
+        if(!ci.equals(getString(R.string.default_value))) onGetHistorial();
     }
 
     public void onGetHistorial() {
-        String accion = CommReq.GET_USER;
-        String appId = "";
-        String celular = "0984000000";
-        String cedula = "44444444";
-        String operadora = "pytgo";
-        String userAutent = "CnsgUser";
-        String passAutent = "123456";
 
-        String transactionJsonHistorial = ApiImpl.getTransaction("historial");
+        final String appID  = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.token), getString(R.string.default_value));
+
+        String transactionJsonHistorial = ApiImpl.getTransaction("historial", appID);
 
         App2727.Logger.i("Mensaje enviado = " + transactionJsonHistorial);
 
@@ -108,12 +105,12 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
                     public void onFailure(Request request, IOException e) {
                         App2727.Logger.e(e.getMessage());
                         showDialogOk("Error!", e.getMessage());
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipeLayout.setRefreshing(false);
-                            }
-                        });
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                swipeLayout.setRefreshing(false);
+//                            }
+//                        });
                     }
 
                     @Override
@@ -130,7 +127,7 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
                                 @Override
                                 public void run() {
                                     recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
-                                    swipeLayout.setRefreshing(false);
+//                                    swipeLayout.setRefreshing(false);
 
                                 }
                             });
@@ -139,12 +136,12 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
                             e.printStackTrace();
                             App2727.Logger.e(e.getMessage());
                             showDialogOk("Error!", e.getMessage());
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    swipeLayout.setRefreshing(false);
-                                }
-                            });
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    swipeLayout.setRefreshing(false);
+//                                }
+//                            });
                         }
 
 
@@ -155,29 +152,29 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
                 App2727.Logger.e(e.getMessage());
 //                showDialogOk("Error!", e.getMessage());
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                });
             }
         } else {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    swipeLayout.setRefreshing(false);
-                }
-            });
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    swipeLayout.setRefreshing(false);
+//                }
+//            });
             showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
         }
 
     }
 
-    @Override
-    public void onRefresh() {
-        onGetHistorial();
-    }
+//    @Override
+//    public void onRefresh() {
+//        onGetHistorial();
+//    }
 
 
     public class HistorialRecyclerViewAdapter
@@ -192,11 +189,13 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
 
             public final View mView;
             public final TextView mTvMensaje;
+            public final TextView mTvFecha;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mTvMensaje = (TextView) view.findViewById(R.id.tvMensaje);
+                mTvFecha = (TextView) view.findViewById(R.id.tvFecha);
             }
 
             @Override
@@ -224,6 +223,7 @@ public class HistorialFragment extends RootFragment implements SwipeRefreshLayou
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mBoundString = mValues.get(position);
             holder.mTvMensaje.setText((mValues.get(position).getMensaje()));
+            holder.mTvFecha.setText((mValues.get(position).getFecha()));
 
         }
 

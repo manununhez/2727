@@ -37,9 +37,9 @@ public class PerfilFragment extends RootFragment {
 
     private UserResponse userResponse;
     private EditText etNroDocumento;
-    private EditText etNroCelular;
+//    private EditText etNroCelular;
     private EditText etNombre;
-    private EditText etApellido;
+//    private EditText etApellido;
 
     private SharedPreferences sharedPref;
 
@@ -74,9 +74,9 @@ public class PerfilFragment extends RootFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
         etNroDocumento = (EditText) rootView.findViewById(R.id.etNroDocumento);
-        etNroCelular = (EditText) rootView.findViewById(R.id.etNroCelular);
+//        etNroCelular = (EditText) rootView.findViewById(R.id.etNroCelular);
         etNombre = (EditText) rootView.findViewById(R.id.etNombre);
-        etApellido = (EditText) rootView.findViewById(R.id.etApellido);
+//        etApellido = (EditText) rootView.findViewById(R.id.etApellido);
         LinearLayout llRegistrar = (LinearLayout) rootView.findViewById(R.id.llRegistrar);
         sharedPref = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
 
@@ -97,8 +97,9 @@ public class PerfilFragment extends RootFragment {
     private void registrarUsuario(){
 
         String numeroDocumento = etNroDocumento.getText().toString();
-        String numeroCelular = etNroCelular.getText().toString();
-        String nombreApellido = etNombre.getText().toString() + " " + etApellido.getText().toString();
+//        String numeroCelular = etNroCelular.getText().toString();
+        String nombreApellido = etNombre.getText().toString();
+        final String appID  = sharedPref.getString(getString(R.string.token), getString(R.string.default_value));
 
         if (numeroDocumento.equals(getString(R.string.default_value))) {
             showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
@@ -114,7 +115,7 @@ public class PerfilFragment extends RootFragment {
 //                App2727.Logger.e(e.getMessage());
 //                showDialogOk("Error!", e.getMessage());
 //            }
-            String putUserJson = ApiImpl.putUserObject(numeroCelular, numeroDocumento, nombreApellido);
+            String putUserJson = ApiImpl.putUserObject(numeroDocumento, nombreApellido, appID);
             App2727.Logger.i("Datos enviados:" + putUserJson);
             if (Utils.haveNetworkConnection(getActivity())) {
                 try {
@@ -173,23 +174,17 @@ public class PerfilFragment extends RootFragment {
 
     private void actualizarDatosPerfil() {
         String ci = sharedPref.getString(getString(R.string.save_ci), getString(R.string.default_value));
-        String celular = sharedPref.getString(getString(R.string.save_tel), getString(R.string.default_value));
         String nombre = sharedPref.getString(getString(R.string.save_nombre), getString(R.string.default_value));
-        String apellido = sharedPref.getString(getString(R.string.save_apellido), getString(R.string.default_value));
 
         etNroDocumento.setText(ci);
-        etNroCelular.setText(celular);
         etNombre.setText(nombre);
-        etApellido.setText(apellido);
     }
 
     private void saveSharedPreferencesData() {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.save_ci), etNroDocumento.getText().toString());
-        editor.putString(getString(R.string.save_tel), etNroCelular.getText().toString());
         editor.putString(getString(R.string.save_nombre), etNombre.getText().toString());
-        editor.putString(getString(R.string.save_apellido), etApellido.getText().toString());
-        editor.commit();
+        editor.apply();
     }
 
     @Override

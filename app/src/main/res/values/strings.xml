@@ -9,9 +9,9 @@
     <string name="save_nombre">Nombre</string>
     <string name="save_apellido">Apellido</string>
     <!--REGISTRO-->
-    <string name="nroDocumento">Número de documento</string>
+    <string name="nroDocumento">Número de cédula de identidad</string>
     <string name="nroCelular">Número de celular</string>
-    <string name="nombre">Nombre</string>
+    <string name="nombre">Nombre y Apellido</string>
     <string name="apellido">Apellido</string>
     <!--DEFAULT_VALUE-->
     <string name="default_value"></string>
@@ -19,6 +19,7 @@
     <string name="gcm_send_message">Token retrieved and sent to server! You can now use gcmsender to
         send downstream messages to this app.</string>
     <string name="registering_message">Generating InstanceID token...</string>
+    <string name="token">Token</string>
     <string name="token_error_message">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try
         running the sample again.</string>

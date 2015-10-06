@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:orientation="vertical">
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/redapp27"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/tvTitulo"
@@ -11,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
+        android:layout_weight="0.16"
         android:text="REGISTRAR PERFIL"
         android:textColor="@android:color/white"
         android:textSize="25sp" />
@@ -22,7 +25,7 @@
         android:layout_below="@id/tvTitulo"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_weight="0.2"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -40,56 +43,58 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@android:color/white"
+            android:inputType="number"
             android:nextFocusDown="@+id/etNroCelular"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
-            android:inputType="number"
-            android:textCursorDrawable="@null" />
+            android:textCursorDrawable="@null"
+            android:windowSoftInputMode="adjustPan" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llNumCel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llNumDoc"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/llNumCel"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/llNumDoc"-->
+    <!--android:layout_marginLeft="20dp"-->
+    <!--android:layout_weight="0.16"-->
+    <!--android:layout_marginRight="20dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:orientation="vertical">-->
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5sp"
-            android:text="@string/nroCelular"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:layout_marginLeft="5sp"-->
+    <!--android:text="@string/nroCelular"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:textSize="15sp" />-->
 
-        <EditText
-            android:id="@+id/etNroCelular"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@android:color/white"
-            android:nextFocusDown="@+id/etNombre"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:inputType="phone"
-            android:singleLine="true"
-            android:textCursorDrawable="@null" />
-    </LinearLayout>
+    <!--<EditText-->
+    <!--android:id="@+id/etNroCelular"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:nextFocusDown="@+id/etNombre"-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingRight="10dp"-->
+    <!--android:inputType="phone"-->
+    <!--android:singleLine="true"-->
+    <!--android:textCursorDrawable="@null" />-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/llNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llNumCel"
+        android:layout_below="@id/llNumDoc"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_weight="0.2"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -112,48 +117,51 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
-            android:textCursorDrawable="@null" />
+            android:textCursorDrawable="@null"
+            android:windowSoftInputMode="adjustPan" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llApellido"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llNombre"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/llApellido"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@id/llNombre"-->
+    <!--android:layout_marginLeft="20dp"-->
+    <!--android:layout_marginRight="20dp"-->
+    <!--android:layout_weight="0.16"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:orientation="vertical">-->
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5sp"
-            android:text="@string/apellido"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:layout_marginLeft="5sp"-->
+    <!--android:text="@string/apellido"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:textSize="15sp" />-->
 
-        <EditText
-            android:id="@+id/etApellido"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@android:color/white"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:singleLine="true"
-            android:textCursorDrawable="@null" />
-    </LinearLayout>
+    <!--<EditText-->
+    <!--android:id="@+id/etApellido"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingRight="10dp"-->
+    <!--android:singleLine="true"-->
+    <!--android:textCursorDrawable="@null" />-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/llRegistrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/llText"
-        android:layout_marginBottom="20dp"
+        android:layout_below="@+id/llNombre"
+        android:layout_weight="0.6"
+        android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
@@ -172,9 +180,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_weight="0.9"
                 android:gravity="center_horizontal"
                 android:text="REGISTRAR"
@@ -195,4 +203,4 @@
 
 
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

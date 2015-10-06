@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     }
 
     private void cloudManagement(){
-        final ProgressDialog  progressDialog = Utils.getProgressDialog(this, "Opciones del cloud", "Espere un momento por favor...");
+        final ProgressDialog  progressDialog = Utils.getProgressDialog(this, "Registrando", "Espere un momento por favor...");
         progressDialog.show();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
