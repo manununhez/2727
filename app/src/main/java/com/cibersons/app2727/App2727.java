@@ -32,4 +32,9 @@ public class App2727 extends Application {
             Log.d(TAG, message);
         }
     }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 }

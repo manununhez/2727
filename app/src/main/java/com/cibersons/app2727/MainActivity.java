@@ -41,7 +41,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity  implements MainFragment.OnHeadlineSelectedListener{ //, HistorialFragment.OnHistorialListener {
+public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener { //, HistorialFragment.OnHistorialListener {
 
     private ViewPager pager;
     private TabAdapter adapter;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
     };
 
     private boolean mSilentMode;
-    private int exit =0;
+    private int exit = 0;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -82,6 +82,46 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
             setupViewPager(pager);
         }
 
+        //Recibiendo mensaje de la notificacion
+        if (getIntent().hasExtra("FromNotification")) {
+            if (getIntent().getBooleanExtra("FromNotification", false))
+                pager.setCurrentItem(1);
+        }
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        App2727.Logger.i("Main " + position);
+                        break;
+                    case 1:
+                        App2727.Logger.i("Historial " + position);
+                        String ci = Utils.getSharedPreferences(MainActivity.this).getString(getString(R.string.save_ci), getString(R.string.default_value));
+                        if (!ci.equals(getString(R.string.default_value)))
+                            HistorialFragment.newInstance("Historial").onGetHistorial();
+                        break;
+                    case 2:
+                        App2727.Logger.i("Instructivo " + position);
+                        break;
+                    case 3:
+                        App2727.Logger.i("Perfil " + position);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         tabLayout.setupWithViewPager(pager);
         tabLayout.getBackground().setAlpha(140);
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
@@ -98,8 +138,8 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
 
     }
 
-    private void cloudManagement(){
-        final ProgressDialog  progressDialog = Utils.getProgressDialog(this, "Registrando", "Espere un momento por favor...");
+    private void cloudManagement() {
+        final ProgressDialog progressDialog = Utils.getProgressDialog(this, "Registrando", "Espere un momento por favor...");
         progressDialog.show();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -146,7 +186,7 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
         viewPager.setAdapter(adapter);
     }
 
-    private void sharedPreferencesSettingsControl(){
+    private void sharedPreferencesSettingsControl() {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
         mSilentMode = sharedPref.getBoolean("silentMode", false);
 //        String celular = sharedPref.getString(getString(R.string.save_tel), getString(R.string.default_value));
@@ -181,7 +221,6 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
 //    }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -202,7 +241,7 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
             }
         });
         dialog.show();
-        if (exit == 1){
+        if (exit == 1) {
             super.onBackPressed();
 
         }
@@ -232,7 +271,7 @@ public class MainActivity extends AppCompatActivity  implements MainFragment.OnH
 //            if(!ci.equals(getString(R.string.default_value))){
 //                //enviar SMS
 //            }else{
-                pager.setCurrentItem(2);
+            pager.setCurrentItem(2);
 //            }
 //            Log.i("INFOCI",ci);
 //            Log.i("INFOCELULAr",celular);

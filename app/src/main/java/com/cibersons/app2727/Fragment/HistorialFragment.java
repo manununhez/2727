@@ -1,7 +1,12 @@
 package com.cibersons.app2727.fragment;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +16,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,10 +46,9 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
     private static HistorialFragment instance;
 
     SwipeRefreshLayout swipeLayout;
-    private CardView cardView;
     private RecyclerView recyclerView;
     private TransaccionResponse transaccionResponse;
-private String ci;
+    private String ci;
 
     public static HistorialFragment newInstance(String title) {
         if (instance == null) {
@@ -58,17 +63,22 @@ private String ci;
     public HistorialFragment() {
     }
 
+    public interface OnUpdateHistorialListener {
+        public void onUpdateHistorial(int focus);
+    }
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_historial, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         setupRecyclerView(recyclerView);
-        cardView = (CardView) rootView.findViewById(R.id.card_view);
 //        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
 //        swipeLayout.setOnRefreshListener(this);
 
-         ci = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.save_ci),getString(R.string.default_value));
-        if(!ci.equals(getString(R.string.default_value))) onGetHistorial();
+        ci = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.save_ci), getString(R.string.default_value));
+        if (!ci.equals(getString(R.string.default_value))) onGetHistorial();
         return rootView;
     }
 
@@ -83,15 +93,9 @@ private String ci;
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(!ci.equals(getString(R.string.default_value))) onGetHistorial();
-    }
-
     public void onGetHistorial() {
 
-        final String appID  = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.token), getString(R.string.default_value));
+        final String appID = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.token), getString(R.string.default_value));
 
         String transactionJsonHistorial = ApiImpl.getTransaction("historial", appID);
 
@@ -100,11 +104,20 @@ private String ci;
 
         if (Utils.haveNetworkConnection(getActivity().getApplicationContext())) {
             try {
+                final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
+                progressDialog.show();
                 new ApiImpl().post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
                     @Override
-                    public void onFailure(Request request, IOException e) {
+                    public void onFailure(Request request, final IOException e) {
                         App2727.Logger.e(e.getMessage());
-                        showDialogOk("Error!", e.getMessage());
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressDialog.dismiss();
+                                Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                            }
+                        });
 //                        getActivity().runOnUiThread(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -118,6 +131,7 @@ private String ci;
                         String responseStr = response.body().string();
                         App2727.Logger.i(responseStr);
                         try {
+                            progressDialog.dismiss();
                             JSONObject jsonObject = new JSONObject(responseStr);
                             Gson gson = new Gson();
 
@@ -132,10 +146,19 @@ private String ci;
                                 }
                             });
                             Log.d("DEBUG", transaccionResponse.toString());
-                        } catch (JSONException e) {
+                        } catch (final JSONException e) {
+                            progressDialog.dismiss();
                             e.printStackTrace();
                             App2727.Logger.e(e.getMessage());
-                            showDialogOk("Error!", e.getMessage());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                                }
+                            });
+
+//                            showDialogOk("Error!", e.getMessage());
 //                            getActivity().runOnUiThread(new Runnable() {
 //                                @Override
 //                                public void run() {
@@ -149,6 +172,7 @@ private String ci;
                 });
             } catch (Exception e) {
                 e.printStackTrace();
+
                 App2727.Logger.e(e.getMessage());
 //                showDialogOk("Error!", e.getMessage());
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -166,7 +190,15 @@ private String ci;
 //                    swipeLayout.setRefreshing(false);
 //                }
 //            });
-            showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.customAlertDialogWithOk(getActivity(), CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY).show();
+
+                }
+            });
+
+//            showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
         }
 
     }
@@ -222,6 +254,11 @@ private String ci;
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mBoundString = mValues.get(position);
+            if(position == 0){
+                ((LinearLayout) holder.mView.findViewById(R.id.llCardView)).setBackgroundResource(R.drawable.roundedrectangle_last);
+//                holder.mView.animate().scaleX(2.5f).scaleY(2.5f).setDuration(2000);
+//                holder.mView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(2000);
+            }
             holder.mTvMensaje.setText((mValues.get(position).getMensaje()));
             holder.mTvFecha.setText((mValues.get(position).getFecha()));
 

@@ -33,7 +33,7 @@ public class Utils {
         return pd;
     }
 
-    public static void customAlertDialogWithOk(Activity activity, String title, String msg) {
+    public static Dialog customAlertDialogWithOk(Activity activity, String title, String msg) {
         final Dialog dialog = new Dialog(activity);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setCancelable(false);
@@ -52,9 +52,7 @@ public class Utils {
                 dialog.dismiss();
             }
         });
-
-
-        dialog.show();
+return dialog;
 
     }
 

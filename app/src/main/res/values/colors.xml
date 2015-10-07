@@ -4,4 +4,5 @@
 <color name="background_gray">#fcefeeee</color>
     <color name="redapp27">#DC342F</color>
     <color name="text">#808080</color>
+    <color name="saldo_background_color">#ffbfc8</color>
 </resources>

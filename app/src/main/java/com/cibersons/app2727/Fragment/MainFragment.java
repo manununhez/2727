@@ -52,7 +52,8 @@ public class MainFragment extends RootFragment {
     private TransaccionResponse transaccionResponse;
 
     private SharedPreferences sharedPreferences;
-private Button btnSMS;
+    private Button btnSMS;
+
     // Container Activity must implement this interface
     public interface OnHeadlineSelectedListener {
         public void onSelectedInstructivo(int pressed);
@@ -146,7 +147,23 @@ private Button btnSMS;
         String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
 
         if (numeroDocumento.equals(getString(R.string.default_value))) {
-            showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.customAlertDialogWithOk(getActivity(), "Campo requerido!", "Favor ingresar el número de documento.").show();
+
+                }
+            });
+
+//            showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
+        }else if(!numeroDocumento.equals(getString(R.string.default_value)) && numeroDocumento.length() < 6){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.customAlertDialogWithOk(getActivity(), "Longitud de cèdula!", "Favor ingresar el número de documento con mayor a 6 dígitos.").show();
+
+                }
+            });
         } else {
             final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
             progressDialog.show();
@@ -165,9 +182,17 @@ private Button btnSMS;
                 try {
                     new ApiImpl().post(CommReq.BASE_URL, putUserJson, new Callback() {
                         @Override
-                        public void onFailure(Request request, IOException e) {
+                        public void onFailure(Request request, final IOException e) {
                             progressDialog.dismiss();
-                            showDialogOk("Error!", e.getMessage());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                                }
+                            });
+
+//                            showDialogOk("Error!", e.getMessage());
                             App2727.Logger.e(e.getMessage());
                         }
 
@@ -182,19 +207,44 @@ private Button btnSMS;
                                 JSONObject jsonObject = new JSONObject(responseStr);
                                 Gson gson = new Gson();
 
-                                UserResponse userResponse = gson.fromJson(String.valueOf(jsonObject), UserResponse.class);
+                                final UserResponse userResponse = gson.fromJson(String.valueOf(jsonObject), UserResponse.class);
 
                                 if (userResponse.getStatus().equals("OK")) {
                                     saveSharedPreferencesData();
-                                    showDialogOk(userResponse.getStatus(), "Usuario registrado correctamente!");
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getContext(),"Usuario registrado correctamente!",Toast.LENGTH_LONG);
+//                                            Utils.customAlertDialogWithOk(getActivity(), userResponse.getStatus(), "Usuario registrado correctamente!").show();
+
+                                        }
+                                    });
+
+//                                    showDialogOk(userResponse.getStatus(), "Usuario registrado correctamente!");
                                     sendMessagePrueba();
                                 } else {
-                                    showDialogOk(userResponse.getStatus(), userResponse.getData().getNombreUsuario());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Utils.customAlertDialogWithOk(getActivity(), userResponse.getStatus(), userResponse.getData().getNombreUsuario()).show();
+
+                                        }
+                                    });
+
+//                                    showDialogOk(userResponse.getStatus(), userResponse.getData().getNombreUsuario());
                                 }
-                            } catch (JSONException e) {
+                            } catch (final JSONException e) {
                                 e.printStackTrace();
                                 progressDialog.dismiss();
-                                showDialogOk("Error!", e.getMessage());
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                                    }
+                                });
+
+//                                showDialogOk("Error!", e.getMessage());
                                 App2727.Logger.e(e.getMessage());
                             }
 
@@ -211,7 +261,14 @@ private Button btnSMS;
             } else {
                 progressDialog.dismiss();
                 App2727.Logger.e(CommReq.ERROR_CONEXION_BODY);
-                showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.customAlertDialogWithOk(getActivity(), CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY).show();
+
+                    }
+                });
+//                showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
             }
         }
     }
@@ -242,21 +299,34 @@ private Button btnSMS;
     private void sendMessagePrueba() {
         final String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
 
-        final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
-        progressDialog.show();
+//        final ProgressDialog progressDialog = Utils.getProgressDialog(getContext(), "Cargando...", "Aguarde un momento por favor!");
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                progressDialog.show();
+
+//            }
+//        });
         try {
             App2727.Logger.i("MO ENVIADO");
             new ApiImpl().postWithParameters(CommReq.BASE_URL_MO, new Callback() {
                 @Override
-                public void onFailure(Request request, IOException e) {
-                    progressDialog.dismiss();
-                    showDialogOk("Error!", e.getMessage());
+                public void onFailure(Request request, final IOException e) {
+//                    progressDialog.dismiss();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                        }
+                    });
+//                    showDialogOk("Error!", e.getMessage());
                 }
 
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String responseStr = response.body().string();
-                    progressDialog.dismiss();
+//                    progressDialog.dismiss();
 //                    showDialogOk("OK!", responseStr);
                     String json = ApiImpl.getTransaction("unico", appID);
                     App2727.Logger.i("Respuesta = " + responseStr);
@@ -291,9 +361,18 @@ private Button btnSMS;
 
                                 transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
 
-                                showDialogOk("OK!", transaccionResponse.getData().getTransaccion().get(0).getMensaje());
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+
+                                    }
+                                });
+
+//                                showDialogOk("OK!", transaccionResponse.getData().getTransaccion().get(0).getMensaje());
                                 String putViewTransString = ApiImpl.putViewTrans(transaccionResponse.getData().getTransaccion().get(0).getIdTransaccion(), appID);
-                                App2727.Logger.i("Mensaje enviado = "+putViewTransString);
+                                App2727.Logger.i("Mensaje enviado = " + putViewTransString);
                                 try {
                                     new ApiImpl().post(CommReq.BASE_URL, putViewTransString, new Callback() {
                                         @Override
@@ -321,10 +400,17 @@ private Button btnSMS;
                     //irAInstructivo();
                 }
             });
-        } catch (Exception e) {
-            progressDialog.dismiss();
+        } catch (final Exception e) {
+//            progressDialog.dismiss();
             e.printStackTrace();
-            showDialogOk("Error!", e.getMessage());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                }
+            });
+//            showDialogOk("Error!", e.getMessage());
         }
     }
 

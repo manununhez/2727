@@ -102,7 +102,15 @@ public class PerfilFragment extends RootFragment {
         final String appID  = sharedPref.getString(getString(R.string.token), getString(R.string.default_value));
 
         if (numeroDocumento.equals(getString(R.string.default_value))) {
-            showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.customAlertDialogWithOk(getActivity(), "Campo requerido!", "Favor ingresar el número de documento.").show();
+
+                }
+            });
+
+//            showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
         }  else {
             final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
             progressDialog.show();
@@ -121,10 +129,17 @@ public class PerfilFragment extends RootFragment {
                 try {
                     new ApiImpl().post(CommReq.BASE_URL, putUserJson, new Callback() {
                         @Override
-                        public void onFailure(Request request, IOException e) {
+                        public void onFailure(Request request, final IOException e) {
                             progressDialog.dismiss();
                             App2727.Logger.e(e.getMessage());
-                            showDialogOk("Error!", e.getMessage());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                                }
+                            });
+//                            showDialogOk("Error!", e.getMessage());
                         }
 
                         @Override
@@ -142,9 +157,25 @@ public class PerfilFragment extends RootFragment {
 
                                 if (userResponse.getStatus().equals("OK")) {
                                     saveSharedPreferencesData();
-                                    showDialogOk(userResponse.getStatus(), "Usuario registrado correctamente!");
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Utils.customAlertDialogWithOk(getActivity(), userResponse.getStatus(), "Usuario registrado correctamente!").show();
+
+                                        }
+                                    });
+
+//                                    showDialogOk(userResponse.getStatus(), "Usuario registrado correctamente!");
                                 } else {
-                                    showDialogOk(userResponse.getStatus(), userResponse.getData().getNombreUsuario());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Utils.customAlertDialogWithOk(getActivity(), userResponse.getStatus(), userResponse.getData().getNombreUsuario()).show();
+
+                                        }
+                                    });
+
+//                                    showDialogOk(userResponse.getStatus(), userResponse.getData().getNombreUsuario());
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -162,7 +193,15 @@ public class PerfilFragment extends RootFragment {
                 }
             } else {
                 progressDialog.dismiss();
-                showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.customAlertDialogWithOk(getActivity(), CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY).show();
+
+                    }
+                });
+
+//                showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
             }
         }
     }
