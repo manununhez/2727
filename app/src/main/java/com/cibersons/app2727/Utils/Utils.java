@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,9 @@ import com.cibersons.app2727.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Created by manunez on 01/10/2015.
  */
@@ -27,6 +31,7 @@ public class Utils {
 
     public static ProgressDialog getProgressDialog(Context context, String title, String text) {
         ProgressDialog pd = new ProgressDialog(context);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.setTitle(title);
         pd.setMessage(text);
         pd.setCancelable(false);
@@ -41,7 +46,7 @@ public class Utils {
         dialog.setContentView(R.layout.custom_dialog_gral);
 
 
-        LinearLayout dialogButton = (LinearLayout) dialog.findViewById(R.id.btn_dialog);
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
         TextView tvMensajeTitle = (TextView) dialog.findViewById(R.id.tvMensajeTitle);
         TextView tvMensajeBody = (TextView) dialog.findViewById(R.id.tvMensajeBody);
         tvMensajeBody.setText(msg);
@@ -52,7 +57,7 @@ public class Utils {
                 dialog.dismiss();
             }
         });
-return dialog;
+        return dialog;
 
     }
 
@@ -66,7 +71,7 @@ return dialog;
         TextView tvMensajeTitle = (TextView) dialog.findViewById(R.id.tvMensajeTitle);
         TextView tvMensajeBody = (TextView) dialog.findViewById(R.id.tvMensajeBody);
 
-        final LinearLayout btnCancelar = (LinearLayout) dialog.findViewById(R.id.btn_cancelar);
+        final Button btnCancelar = (Button) dialog.findViewById(R.id.btn_cancelar);
         tvMensajeBody.setText(msg);
         tvMensajeTitle.setText(title);
         btnCancelar.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +94,7 @@ return dialog;
 
 //        final EditText etCI = (EditText) dialog.findViewById(R.id.etCI);
 //        final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
-        final LinearLayout btnCancelar = (LinearLayout) dialog.findViewById(R.id.btn_cancelar);
+        final Button btnCancelar = (Button) dialog.findViewById(R.id.btn_cancelar);
 //        btnAceptar.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -119,8 +124,8 @@ return dialog;
         return dialog;
     }
 
-    public static SharedPreferences getSharedPreferences(Activity activity){
-       SharedPreferences sharedPreferences =  activity.getSharedPreferences(activity.getString(R.string.prefs_name), Context.MODE_PRIVATE);
+    public static SharedPreferences getSharedPreferences(Activity activity) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(activity.getString(R.string.prefs_name), Context.MODE_PRIVATE);
         return sharedPreferences;
 
     }
@@ -158,5 +163,31 @@ return dialog;
             return false;
         }
         return true;
+    }
+
+
+    public static final String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

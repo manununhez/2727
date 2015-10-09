@@ -38,26 +38,34 @@
             android:textColor="@color/button_material_dark" />
 
 
-        <LinearLayout
+        <Button
             android:id="@+id/btn_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center_horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/redapp27"
-                android:text="OK"/>
-            <!--<ImageView-->
+            android:textColor="@color/redapp27"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/white"
+            android:text="OK"/>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/btn_dialog"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:layout_gravity="center_horizontal">-->
+            <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="5dp"-->
-                <!--android:src="@drawable/menu_item_arrow_red"/>-->
-        </LinearLayout>
+                <!--android:textStyle="bold"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textColor="@color/redapp27"-->
+                <!--android:text="OK"/>-->
+            <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginLeft="5dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:src="@drawable/menu_item_arrow_red"/>&ndash;&gt;-->
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 

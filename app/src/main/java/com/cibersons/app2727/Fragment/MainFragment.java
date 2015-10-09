@@ -113,7 +113,7 @@ public class MainFragment extends RootFragment {
 
                 if (ci.equals(getString(R.string.default_value))) {
                     final Dialog dialog = Utils.customAlertDialogCI(getActivity());
-                    final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
+                    final Button btnAceptar = (Button) dialog.findViewById(R.id.btn_aceptar);
                     etCI = (EditText) dialog.findViewById(R.id.etCI);
                     btnAceptar.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -156,7 +156,7 @@ public class MainFragment extends RootFragment {
             });
 
 //            showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
-        }else if(!numeroDocumento.equals(getString(R.string.default_value)) && numeroDocumento.length() < 6){
+        } else if (!numeroDocumento.equals(getString(R.string.default_value)) && numeroDocumento.length() < 6) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -214,7 +214,7 @@ public class MainFragment extends RootFragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(getContext(),"Usuario registrado correctamente!",Toast.LENGTH_LONG);
+                                            Toast.makeText(getContext(), "Usuario registrado correctamente!", Toast.LENGTH_LONG);
 //                                            Utils.customAlertDialogWithOk(getActivity(), userResponse.getStatus(), "Usuario registrado correctamente!").show();
 
                                         }
@@ -365,7 +365,11 @@ public class MainFragment extends RootFragment {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+                                        if (transaccionResponse.getData().getTransaccion().get(0).getCodRespuesta().equals(CommReq.NO_SE_ENCUENTRA_SUSCRIPTO)) {
+                                            irAInstructivo();
+                                        } else {
+                                            Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+                                        }
 
                                     }
                                 });
@@ -416,7 +420,7 @@ public class MainFragment extends RootFragment {
 
     private void irAInstructivo() {
         final Dialog dialog = Utils.customAlertDialogInstructivo(getActivity());
-        final LinearLayout dialogButton = (LinearLayout) dialog.findViewById(R.id.btn_dialog);
+        final Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

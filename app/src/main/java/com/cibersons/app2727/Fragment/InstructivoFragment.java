@@ -107,7 +107,7 @@ public class InstructivoFragment extends Fragment implements BaseSliderView.OnSl
 
     @Override
     public void onPageSelected(int position) {
-        Log.d("Slider Demo", "Page Changed: " + position);
+
     }
 
     @Override

@@ -68,7 +68,6 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_historial, container, false);
@@ -77,8 +76,7 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
 //        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
 //        swipeLayout.setOnRefreshListener(this);
 
-        ci = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.save_ci), getString(R.string.default_value));
-        if (!ci.equals(getString(R.string.default_value))) onGetHistorial();
+//        onGetHistorial();
         return rootView;
     }
 
@@ -92,71 +90,98 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        onGetHistorial();
+    }
 
     public void onGetHistorial() {
 
         final String appID = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.token), getString(R.string.default_value));
+        String ci = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.save_ci), getString(R.string.default_value));
+        App2727.Logger.i("CI = " + ci);
+        if (!ci.equals(getString(R.string.default_value))) {
 
-        String transactionJsonHistorial = ApiImpl.getTransaction("historial", appID);
 
-        App2727.Logger.i("Mensaje enviado = " + transactionJsonHistorial);
+            String transactionJsonHistorial = ApiImpl.getTransaction("historial", appID);
+            App2727.Logger.i("Mensaje enviado = " + transactionJsonHistorial);
 
 
-        if (Utils.haveNetworkConnection(getActivity().getApplicationContext())) {
-            try {
-                final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
-                progressDialog.show();
-                new ApiImpl().post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
-                    @Override
-                    public void onFailure(Request request, final IOException e) {
-                        App2727.Logger.e(e.getMessage());
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressDialog.dismiss();
-                                Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+            if (Utils.haveNetworkConnection(getActivity().getApplicationContext())) {
+                try {
+//                    final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
+//                    final int totalProgressTime = 100;
+//
+//                    final Thread t = new Thread() {
+//                        @Override
+//                        public void run() {
+//
+//                            try {
+//                                sleep(2000);
+//                                progressDialog.show();
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//
+//                        }
+//
+//                    };
+//                    t.start();
 
-                            }
-                        });
+                    new ApiImpl().post(CommReq.BASE_URL, transactionJsonHistorial, new Callback() {
+                        @Override
+                        public void onFailure(Request request, final IOException e) {
+                            App2727.Logger.e(e.getMessage());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+//                                    progressDialog.dismiss();
+                                    Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+
+                                }
+                            });
 //                        getActivity().runOnUiThread(new Runnable() {
 //                            @Override
 //                            public void run() {
 //                                swipeLayout.setRefreshing(false);
 //                            }
 //                        });
-                    }
+                        }
 
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        String responseStr = response.body().string();
-                        App2727.Logger.i(responseStr);
-                        try {
-                            progressDialog.dismiss();
-                            JSONObject jsonObject = new JSONObject(responseStr);
-                            Gson gson = new Gson();
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+                            String responseStr = response.body().string();
+                            App2727.Logger.i(responseStr);
+                            try {
+//                                progressDialog.dismiss();
+                                App2727.Logger.i("REcibido = "+responseStr);
+                                JSONObject jsonObject = new JSONObject(responseStr);
+                                Gson gson = new Gson();
 
-                            transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
+                                transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
 
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
 //                                    swipeLayout.setRefreshing(false);
 
-                                }
-                            });
-                            Log.d("DEBUG", transaccionResponse.toString());
-                        } catch (final JSONException e) {
-                            progressDialog.dismiss();
-                            e.printStackTrace();
-                            App2727.Logger.e(e.getMessage());
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
+                                    }
+                                });
+                                Log.d("DEBUG", transaccionResponse.toString());
+                            } catch (final JSONException e) {
+//                                progressDialog.dismiss();
+                                e.printStackTrace();
+                                App2727.Logger.e(e.getMessage());
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Utils.customAlertDialogWithOk(getActivity(), "Error!", e.getMessage()).show();
 
-                                }
-                            });
+                                    }
+                                });
 
 //                            showDialogOk("Error!", e.getMessage());
 //                            getActivity().runOnUiThread(new Runnable() {
@@ -165,40 +190,41 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
 //                                    swipeLayout.setRefreshing(false);
 //                                }
 //                            });
+                            }
+
+
                         }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
 
-
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-
-                App2727.Logger.e(e.getMessage());
+                    App2727.Logger.e(e.getMessage());
 //                showDialogOk("Error!", e.getMessage());
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
 //                getActivity().runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
 //                        swipeLayout.setRefreshing(false);
 //                    }
 //                });
-            }
-        } else {
+                }
+            } else {
 //            getActivity().runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {
 //                    swipeLayout.setRefreshing(false);
 //                }
 //            });
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.customAlertDialogWithOk(getActivity(), CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY).show();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.customAlertDialogWithOk(getActivity(), CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY).show();
 
-                }
-            });
+                    }
+                });
 
 //            showDialogOk(CommReq.ERROR_CONEXION_TITLE, CommReq.ERROR_CONEXION_BODY);
+            }
         }
 
     }
@@ -252,13 +278,25 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.mBoundString = mValues.get(position);
-            if(position == 0){
+            if (position == 0) {
                 ((LinearLayout) holder.mView.findViewById(R.id.llCardView)).setBackgroundResource(R.drawable.roundedrectangle_last);
 //                holder.mView.animate().scaleX(2.5f).scaleY(2.5f).setDuration(2000);
 //                holder.mView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(2000);
+            }else{
+                ((LinearLayout) holder.mView.findViewById(R.id.llCardView)).setBackgroundResource(R.drawable.roundedrectangle);
+
             }
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity().getApplicationContext(), String.valueOf(position), Toast.LENGTH_LONG).show();
+
+                }
+            });
+//                 }
             holder.mTvMensaje.setText((mValues.get(position).getMensaje()));
             holder.mTvFecha.setText((mValues.get(position).getFecha()));
 

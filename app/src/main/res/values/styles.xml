@@ -7,7 +7,7 @@
 
     <style name="Base.Theme.DesignApp2727" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@android:color/transparent</item>
-        <item name="colorPrimaryDark">#5A5A8F</item>
+        <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">#ffffff</item>
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:windowActionBarOverlay">true</item>

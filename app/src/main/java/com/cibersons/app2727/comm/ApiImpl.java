@@ -1,6 +1,7 @@
 package com.cibersons.app2727.comm;
 
 import com.cibersons.app2727.App2727;
+import com.cibersons.app2727.utils.Utils;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -21,6 +22,8 @@ public class ApiImpl {
             = MediaType.parse("application/json; charset=utf-8");
 
     OkHttpClient client;
+    private static String user = "CnsgUser";
+    private static String pass = "123456";
 
     public ApiImpl() throws Exception {
         App2727.Logger.i("ApiImpl() CREADO");
@@ -44,9 +47,11 @@ public class ApiImpl {
 
     public Call postWithParameters(String url, Callback callback) throws IOException {
         RequestBody formBody = new FormEncodingBuilder()
-                .add("celular", "0982484860")
+                .add("celular", "0982484860") //Manu
                 .add("mensaje", "456123")
-//                .add("celular", "0984123456")
+//                .add("celular", "0981"+ Utils.md5(user)+"") //dario
+//                .add("mensaje", ""+ Utils.md5(user)+"")
+//                .add("celular", "0984"+ Utils.md5(user)+"") //Dani
 //                .add("mensaje", "222222")
                 .build();
         Request request = new Request.Builder()
@@ -69,26 +74,26 @@ public class ApiImpl {
 
 
     public static String getUserJson(String appID) {
-        return "{\"accion\":\"getUser\",\"appId\":\""+appID+"\"," +
-                "\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
+        return "{\"accion\":\"getUser\",\"appId\":\"" + appID + "\"," +
+                "\"userAutent\":\""+ Utils.md5(user)+"\",\"passAutent\":\""+ Utils.md5(pass)+"\"}";
     }
 
-    public static String getTransaction(String tipoConsulta, String appID){
-        return "{\"accion\":\"getTransaccion\",\"appId\":\""+appID+"\"," +
-                "\"tipoConsulta\": \""+tipoConsulta+"\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
+    public static String getTransaction(String tipoConsulta, String appID) {
+        return "{\"accion\":\"getTransaccion\",\"appId\":\"" + appID + "\"," +
+                "\"tipoConsulta\": \"" + tipoConsulta + "\",\"userAutent\":\""+ Utils.md5(user)+"\",\"passAutent\":\""+ Utils.md5(pass)+"\"}";
     }
 
-    public static String putUserObject(String nroDocumento, String nombreApellido, String appID){
-        return "{\"accion\":\"putUser\",\"appId\":\""+appID+"\"," +
-                "\"cedula\":\""+nroDocumento+"\",\"nombre\":\""+nombreApellido+"\"," +
-                "\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
+    public static String putUserObject(String nroDocumento, String nombreApellido, String appID) {
+        return "{\"accion\":\"putUser\",\"appId\":\"" + appID + "\"," +
+                "\"cedula\":\"" + nroDocumento + "\",\"nombre\":\"" + nombreApellido + "\"," +
+                "\"userAutent\":\""+ Utils.md5(user)+"\",\"passAutent\":\""+ Utils.md5(pass)+"\"}";
     }
 
 
-    public static String putViewTrans(String numeroTransaccion, String appID){
+    public static String putViewTrans(String numeroTransaccion, String appID) {
         return "{\"accion\":\"putViewTrans\"," +
-                "\"appId\":\""+appID+"\"," +
-                "\"nroTransaccion\":\""+numeroTransaccion+"\",\"userAutent\":\"CnsgUser\",\"passAutent\":\"123456\"}";
+                "\"appId\":\"" + appID + "\"," +
+                "\"nroTransaccion\":\"" + numeroTransaccion + "\",\"userAutent\":\""+ Utils.md5(user)+"\",\"passAutent\":\""+ Utils.md5(pass)+"\"}";
     }
 
 

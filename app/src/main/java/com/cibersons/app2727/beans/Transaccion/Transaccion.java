@@ -7,6 +7,7 @@ public class Transaccion {
     private String idTransaccion;
     private String mensaje;
     private String fecha;
+    private String codRespuesta;
 
     public Transaccion(String idTransaccion, String mensaje) {
         this.idTransaccion = idTransaccion;
@@ -37,6 +38,13 @@ public class Transaccion {
         this.fecha = fecha;
     }
 
+    public String getCodRespuesta() {
+        return codRespuesta;
+    }
+
+    public void setCodRespuesta(String codRespuesta) {
+        this.codRespuesta = codRespuesta;
+    }
 
     @Override
     public String toString() {
@@ -44,6 +52,7 @@ public class Transaccion {
                 "idTransaccion='" + idTransaccion + '\'' +
                 ", mensaje='" + mensaje + '\'' +
                 ", fecha='" + fecha + '\'' +
+                ", codRespuesta='" + codRespuesta + '\'' +
                 '}';
     }
 }

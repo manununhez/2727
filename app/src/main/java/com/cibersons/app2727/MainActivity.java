@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -231,8 +232,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
     @Override
     public void onBackPressed() {
 
-        Dialog dialog = Utils.customAlertDialogWithOptions(this, "Saliendo de la aplicacion", "Esta seguro que desea salir?");
-        final LinearLayout btnAceptar = (LinearLayout) dialog.findViewById(R.id.btn_aceptar);
+        final Dialog dialog = Utils.customAlertDialogWithOptions(this, "Saliendo de la aplicacion", "Esta seguro que desea salir?");
+        final Button btnAceptar = (Button) dialog.findViewById(R.id.btn_aceptar);
         btnAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,7 +241,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
                 finish();
             }
         });
-        dialog.show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dialog.show();
+            }
+        });
+
         if (exit == 1) {
             super.onBackPressed();
 
