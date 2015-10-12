@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,14 +38,9 @@ import java.io.IOException;
 public class MainFragment extends RootFragment {
 
     private static MainFragment instance;
-    //    private EditText phoneNo;
-//    private EditText messageBody;
     private LinearLayout send;
     private LinearLayout llTextoBienvenida;
-    //    private Button btnOK;
-//    private CardView cardView;
     private EditText etCI;
-
     private static int PRESSED = 1;
     OnHeadlineSelectedListener mCallback;
     private TransaccionResponse transaccionResponse;
@@ -89,7 +83,6 @@ public class MainFragment extends RootFragment {
         return instance;
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -167,15 +160,7 @@ public class MainFragment extends RootFragment {
         } else {
             final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
             progressDialog.show();
-//            ApiImpl postOkHttp = null;
-//            try {
-//                postOkHttp = new ApiImpl();
-//            } catch (Exception e) {
-//                progressDialog.dismiss();
-//                e.printStackTrace();
-//                showDialogOk("Error!", "XXXXXXXX");
-//                App2727.Logger.e(e.getMessage());
-//            }
+
             String putUserJson = ApiImpl.putUserObject(numeroDocumento, nombreApellido, appID);
             App2727.Logger.i("Datos enviados:" + putUserJson);
             if (Utils.haveNetworkConnection(getActivity())) {
@@ -209,7 +194,7 @@ public class MainFragment extends RootFragment {
 
                                 final UserResponse userResponse = gson.fromJson(String.valueOf(jsonObject), UserResponse.class);
 
-                                if (userResponse.getStatus().equals("OK")) {
+                                if (userResponse.getStatus().equals(CommReq.STATUS_OK)) {
                                     saveSharedPreferencesData();
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
@@ -298,6 +283,7 @@ public class MainFragment extends RootFragment {
 
     private void sendMessagePrueba() {
         final String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
+        final String ci = sharedPreferences.getString(getString(R.string.save_ci), getString(R.string.default_value));
 
 //        final ProgressDialog progressDialog = Utils.getProgressDialog(getContext(), "Cargando...", "Aguarde un momento por favor!");
 //        getActivity().runOnUiThread(new Runnable() {
@@ -309,7 +295,7 @@ public class MainFragment extends RootFragment {
 //        });
         try {
             App2727.Logger.i("MO ENVIADO");
-            new ApiImpl().postWithParameters(CommReq.BASE_URL_MO, new Callback() {
+            new ApiImpl().postWithParameters(CommReq.BASE_URL_MO, ci, new Callback() {
                 @Override
                 public void onFailure(Request request, final IOException e) {
 //                    progressDialog.dismiss();
@@ -362,38 +348,45 @@ public class MainFragment extends RootFragment {
                                 transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
 
 
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (transaccionResponse.getData().getTransaccion().get(0).getCodRespuesta().equals(CommReq.NO_SE_ENCUENTRA_SUSCRIPTO)) {
-                                            irAInstructivo();
-                                        } else {
-                                            Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
-                                        }
-
-                                    }
-                                });
-
-//                                showDialogOk("OK!", transaccionResponse.getData().getTransaccion().get(0).getMensaje());
-                                String putViewTransString = ApiImpl.putViewTrans(transaccionResponse.getData().getTransaccion().get(0).getIdTransaccion(), appID);
-                                App2727.Logger.i("Mensaje enviado = " + putViewTransString);
-                                try {
-                                    new ApiImpl().post(CommReq.BASE_URL, putViewTransString, new Callback() {
+                                if (transaccionResponse.getStatus().equals(CommReq.STATUS_OK)) {
+                                    getActivity().runOnUiThread(new Runnable() {
                                         @Override
-                                        public void onFailure(Request request, IOException e) {
-                                            App2727.Logger.e(e.getMessage());
+                                        public void run() {
+                                            if (transaccionResponse.getData().getTransaccion().get(0).getCodRespuesta().equals(CommReq.NO_SE_ENCUENTRA_SUSCRIPTO)) {
+                                                irAInstructivo();
+                                            } else {
+                                                String putViewTransString = ApiImpl.putViewTrans(transaccionResponse.getData().getTransaccion().get(0).getIdTransaccion(), appID);
+                                                App2727.Logger.i("Mensaje enviado = " + putViewTransString);
+                                                try {
+                                                    new ApiImpl().post(CommReq.BASE_URL, putViewTransString, new Callback() {
+                                                        @Override
+                                                        public void onFailure(Request request, IOException e) {
+                                                            App2727.Logger.e(e.getMessage());
 
-                                        }
+                                                        }
 
-                                        @Override
-                                        public void onResponse(Response response) throws IOException {
-                                            String responseStr = response.body().string();
-                                            App2727.Logger.i("Respuesta = " + responseStr);
+                                                        @Override
+                                                        public void onResponse(Response response) throws IOException {
+                                                            String responseStr = response.body().string();
+                                                            App2727.Logger.i("Respuesta = " + responseStr);
+                                                        }
+                                                    });
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+
+                                            }
+
                                         }
                                     });
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                } else if (transaccionResponse.getStatus().equals(CommReq.STATUS_ERROR)) {
+                                    Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+
                                 }
+
+//                                showDialogOk("OK!", transaccionResponse.getData().getTransaccion().get(0).getMensaje());
+
                             }
                         });
                     } catch (Exception e) {

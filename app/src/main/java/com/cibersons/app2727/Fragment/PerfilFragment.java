@@ -111,6 +111,14 @@ public class PerfilFragment extends RootFragment {
             });
 
 //            showDialogOk("Campo requerido!", "Favor ingresar el número de documento.");
+        } else if (!numeroDocumento.equals(getString(R.string.default_value)) && numeroDocumento.length() < 6) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Utils.customAlertDialogWithOk(getActivity(), "Longitud de cèdula!", "Favor ingresar el número de documento con mayor a 6 dígitos.").show();
+
+                }
+            });
         }  else {
             final ProgressDialog progressDialog = Utils.getProgressDialog(getActivity(), "Cargando...", "Aguarde un momento por favor!");
             progressDialog.show();

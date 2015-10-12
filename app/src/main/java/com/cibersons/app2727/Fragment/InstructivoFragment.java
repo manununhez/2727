@@ -47,12 +47,6 @@ public class InstructivoFragment extends Fragment implements BaseSliderView.OnSl
         View rootView = inflater.inflate(R.layout.fragment_instructivo, container, false);
         mDemoSlider = (SliderLayout)rootView.findViewById(R.id.slider);
 
-//        HashMap<String,String> url_maps = new HashMap<String, String>();
-//        url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
-//        url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
-//        url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
-//        url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
-
         HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
         file_maps.put("Paso 1",R.drawable.paso1);
         file_maps.put("Paso 2",R.drawable.paso2);

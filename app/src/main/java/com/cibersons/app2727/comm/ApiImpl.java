@@ -45,10 +45,10 @@ public class ApiImpl {
     }
 
 
-    public Call postWithParameters(String url, Callback callback) throws IOException {
+    public Call postWithParameters(String url, String ci, Callback callback) throws IOException {
         RequestBody formBody = new FormEncodingBuilder()
                 .add("celular", "0982484860") //Manu
-                .add("mensaje", "456123")
+                .add("mensaje", ci)
 //                .add("celular", "0981"+ Utils.md5(user)+"") //dario
 //                .add("mensaje", ""+ Utils.md5(user)+"")
 //                .add("celular", "0984"+ Utils.md5(user)+"") //Dani
@@ -94,6 +94,10 @@ public class ApiImpl {
         return "{\"accion\":\"putViewTrans\"," +
                 "\"appId\":\"" + appID + "\"," +
                 "\"nroTransaccion\":\"" + numeroTransaccion + "\",\"userAutent\":\""+ Utils.md5(user)+"\",\"passAutent\":\""+ Utils.md5(pass)+"\"}";
+    }
+
+    public static String getAutentication(String appID){
+        return "{\"accion\":\"getAutenticacion\",\"appId\":\""+appID+"\",\"userAutent\":\""+Utils.md5(user)+"\",\"passAutent\":\""+ Utils.md5(pass)+"\"}";
     }
 
 

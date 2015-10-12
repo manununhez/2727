@@ -61,6 +61,29 @@ public class Utils {
 
     }
 
+    public static Dialog customAlertDialogWithOkFinish(final Activity activity, String title, String msg) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCancelable(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_gral);
+
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_dialog);
+        TextView tvMensajeTitle = (TextView) dialog.findViewById(R.id.tvMensajeTitle);
+        TextView tvMensajeBody = (TextView) dialog.findViewById(R.id.tvMensajeBody);
+        tvMensajeBody.setText(msg);
+        tvMensajeTitle.setText(title);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.finish();
+            }
+        });
+        return dialog;
+
+    }
+
     public static Dialog customAlertDialogWithOptions(Activity activity, String title, String msg) {
         final Dialog dialog = new Dialog(activity);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);

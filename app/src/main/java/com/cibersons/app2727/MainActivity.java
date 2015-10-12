@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cibersons.app2727.adapter.TabAdapter;
+import com.cibersons.app2727.beans.User.UserAutenticationResponse;
 import com.cibersons.app2727.comm.CommReq;
 import com.cibersons.app2727.comm.ApiImpl;
 import com.cibersons.app2727.fragment.HistorialFragment;
@@ -34,20 +35,23 @@ import com.cibersons.app2727.fragment.PerfilFragment;
 import com.cibersons.app2727.googleCloudNotification.QuickstartPreferences;
 import com.cibersons.app2727.googleCloudNotification.RegistrationIntentService;
 import com.cibersons.app2727.utils.Utils;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener { //, HistorialFragment.OnHistorialListener {
+public class MainActivity extends AppCompatActivity implements MainFragment.OnHeadlineSelectedListener {
 
     private ViewPager pager;
     private TabAdapter adapter;
     private TabLayout tabLayout;
-    //    private FloatingActionButton fab;
     private int[] imageResId = {
             R.mipmap.ic_home_new,
             R.mipmap.ic_saldo_new,
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
     private int exit = 0;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
+    private UserAutenticationResponse userAutenticationResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +73,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
         //Manejo del cloud notification
         cloudManagement();
         // Restore preferences
-
         sharedPreferencesSettingsControl();
+
+        //Autenticacion
+        controlDeAutenticacion();
         exit = 0;
         pager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new TabAdapter(getResources(), getSupportFragmentManager());
@@ -84,10 +90,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
         }
 
         //Recibiendo mensaje de la notificacion
-        if (getIntent().hasExtra("FromNotification")) {
-            if (getIntent().getBooleanExtra("FromNotification", false))
-                pager.setCurrentItem(1);
-        }
+        manageNotification();
 
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -104,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
                     case 1:
                         App2727.Logger.i("Historial " + position);
                         String ci = Utils.getSharedPreferences(MainActivity.this).getString(getString(R.string.save_ci), getString(R.string.default_value));
-                        if (!ci.equals(getString(R.string.default_value)))
+                        String userAutentication = Utils.getSharedPreferences(MainActivity.this).getString(getString(R.string.user_autentication), getString(R.string.default_value));
+                        if (!ci.equals(getString(R.string.default_value)) && userAutentication.equals(CommReq.STATUS_OK))
                             HistorialFragment.newInstance("Historial").onGetHistorial();
                         break;
                     case 2:
@@ -129,13 +133,70 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
             tabLayout.getTabAt(i).setIcon(imageResId[i]);
         }
 
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+
+    }
+
+    private void manageNotification() {
+        App2727.Logger.i("manageNotification");
+        if (getIntent().hasExtra("FromNotification")) {
+            if (getIntent().getBooleanExtra("FromNotification", false))
+                pager.setCurrentItem(1);
+        }
+    }
+
+    private void controlDeAutenticacion() {
+
+
+        final SharedPreferences sharedPreferences = Utils.getSharedPreferences(this);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
+        String userAutentication = sharedPreferences.getString(getString(R.string.user_autentication), getString(R.string.default_value));
+        String getAutenticationString = ApiImpl.getAutentication(appID);
+
+        App2727.Logger.i("Autenticacion de usuario = " + userAutentication);
+        App2727.Logger.i("Mensaje enviado =" + getAutenticationString);
+
+        try {
+            new ApiImpl().post(CommReq.BASE_URL, getAutenticationString, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    App2727.Logger.e(e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String responseStr = response.body().string();
+
+                    App2727.Logger.i(responseStr);
+                    Gson gson = new Gson();
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(responseStr);
+                        userAutenticationResponse = gson.fromJson(String.valueOf(jsonObject), UserAutenticationResponse.class);
+                        App2727.Logger.i("Mensaje recibido = " + userAutenticationResponse);
+                        if (userAutenticationResponse.getStatus().equals(CommReq.STATUS_OK)) {
+                            editor.putString(getString(R.string.user_autentication), CommReq.STATUS_OK);
+                        } else if (userAutenticationResponse.getStatus().equals(CommReq.STATUS_ERROR)) {
+                            editor.putString(getString(R.string.user_autentication), CommReq.STATUS_ERROR);
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.customAlertDialogWithOkFinish(MainActivity.this, "Error de autenticación!", "Por favor actualice su app.").show();
+
+                                }
+                            });
+                        }
+                        editor.commit();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -170,6 +231,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+
+        manageNotification();
     }
 
     @Override
@@ -188,38 +251,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
     }
 
     private void sharedPreferencesSettingsControl() {
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = Utils.getSharedPreferences(this);
         mSilentMode = sharedPref.getBoolean("silentMode", false);
-//        String celular = sharedPref.getString(getString(R.string.save_tel), getString(R.string.default_value));
-//
-//        App2727.Logger.i("Celular = " + celular);
-//        if(celular.equals(getString(R.string.default_value))){
-//            String nroTel = getMy10DigitPhoneNumber();
-//            App2727.Logger.i("Nro de cel = " + nroTel);
-//            SharedPreferences.Editor editor = sharedPref.edit();
-//            editor.putString(getString(R.string.save_tel), nroTel);
-//            editor.commit();
-//        }
-    }
 
-//    private String getMyPhoneNumber(){
-//        TelephonyManager mTelephonyMgr;
-//        mTelephonyMgr = (TelephonyManager)
-//                getSystemService(Context.TELEPHONY_SERVICE);
-//
-//        App2727.Logger.i("getNetworkOperatorName obtenido = "+mTelephonyMgr.getNetworkOperatorName());
-//        App2727.Logger.i("getSimOperatorName obtenido = "+mTelephonyMgr.getSimOperatorName());
-//        App2727.Logger.i("getLine1Number obtenido = "+mTelephonyMgr.getLine1Number());
-//        App2727.Logger.i("getPhoneType obtenido = "+mTelephonyMgr.getPhoneType());
-//        App2727.Logger.i("getDeviceId obtenido = "+mTelephonyMgr.getDeviceId());
-//        return mTelephonyMgr.getLine1Number();
-//    }
-//
-//    private String getMy10DigitPhoneNumber(){
-//        String s = getMyPhoneNumber();
-//
-//        return s.substring(2);
-//    }
+    }
 
 
     @Override
@@ -272,16 +307,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnHe
     @Override
     public void onSelectedInstructivo(int pressed) {
         if (pressed == 1) {
-//            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefs_name),Context.MODE_PRIVATE);
-//            String ci = sharedPref.getString(getString(R.string.save_ci),  getString(R.string.default_value));
-//            String celular = sharedPref.getString(getString(R.string.save_tel),  getString(R.string.default_value));
-//            if(!ci.equals(getString(R.string.default_value))){
-//                //enviar SMS
-//            }else{
             pager.setCurrentItem(2);
-//            }
-//            Log.i("INFOCI",ci);
-//            Log.i("INFOCELULAr",celular);
+
         }
     }
 

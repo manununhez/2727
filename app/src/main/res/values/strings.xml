@@ -4,6 +4,7 @@
     <string name="action_settings">Settings</string>
 <!--SHARED PREFERENCES-->
     <string name="prefs_name">com.cibersons.app2727.SHARED_PREFERENCES</string>
+    <string name="user_autentication">Autentication</string>
     <string name="save_ci">CI</string>
     <string name="save_tel">NroCelular</string>
     <string name="save_nombre">Nombre</string>

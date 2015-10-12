@@ -41,11 +41,10 @@ import java.util.List;
 /**
  * Created by Manuel on 8/19/2015.
  */
-public class HistorialFragment extends RootFragment {//implements SwipeRefreshLayout.OnRefreshListener {
+public class HistorialFragment extends RootFragment {
 
     private static HistorialFragment instance;
 
-    SwipeRefreshLayout swipeLayout;
     private RecyclerView recyclerView;
     private TransaccionResponse transaccionResponse;
     private String ci;
@@ -63,10 +62,6 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
     public HistorialFragment() {
     }
 
-    public interface OnUpdateHistorialListener {
-        public void onUpdateHistorial(int focus);
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,11 +75,6 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
         return rootView;
     }
 
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        onGetHistorial();
-//    }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
@@ -100,9 +90,10 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
 
         final String appID = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.token), getString(R.string.default_value));
         String ci = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.save_ci), getString(R.string.default_value));
-        App2727.Logger.i("CI = " + ci);
-        if (!ci.equals(getString(R.string.default_value))) {
+        String userAutentication = Utils.getSharedPreferences(getActivity()).getString(getString(R.string.user_autentication), getString(R.string.default_value));
 
+        App2727.Logger.i("CI = " + ci);
+        if (!ci.equals(getString(R.string.default_value)) && userAutentication.equals(CommReq.STATUS_OK)){
 
             String transactionJsonHistorial = ApiImpl.getTransaction("historial", appID);
             App2727.Logger.i("Mensaje enviado = " + transactionJsonHistorial);
@@ -162,14 +153,24 @@ public class HistorialFragment extends RootFragment {//implements SwipeRefreshLa
 
                                 transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
 
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
+                                if(transaccionResponse.getStatus().equals(CommReq.STATUS_OK)) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            recyclerView.setAdapter(new HistorialRecyclerViewAdapter(getActivity(), transaccionResponse.getData().getTransaccion()));
 //                                    swipeLayout.setRefreshing(false);
 
-                                    }
-                                });
+                                        }
+                                    });
+                                }else if(transaccionResponse.getStatus().equals(CommReq.STATUS_ERROR)){
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Utils.customAlertDialogWithOk(getActivity(), CommReq.STATUS_ERROR,transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+
+                                        }
+                                    });
+                                }
                                 Log.d("DEBUG", transaccionResponse.toString());
                             } catch (final JSONException e) {
 //                                progressDialog.dismiss();

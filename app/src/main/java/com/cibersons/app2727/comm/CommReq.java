@@ -11,6 +11,8 @@ public class CommReq {
     //    MENSAJES DE ERROR
     public static String ERROR_CONEXION_TITLE = "Error de conexión!";
     public static String ERROR_CONEXION_BODY = "Verifique su conexión de red para poder realizar esta acción.";
+    public static String STATUS_ERROR = "Error";
+    public static String STATUS_OK = "OK";
     //USER
     public static final String GET_USER = "getUser";
     public static final String PUT_USER = "putUser";
