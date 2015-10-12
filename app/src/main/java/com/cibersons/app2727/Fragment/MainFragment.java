@@ -90,13 +90,6 @@ public class MainFragment extends RootFragment {
         llTextoBienvenida = (LinearLayout) rootView.findViewById(R.id.llTextoBienvenida);
         llTextoBienvenida.getBackground().setAlpha(80);
 
-        btnSMS = (Button) rootView.findViewById(R.id.btnSMS);
-        btnSMS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
-        });
         sharedPreferences = Utils.getSharedPreferences(getActivity());
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,9 +113,9 @@ public class MainFragment extends RootFragment {
                 } else {
 
                     //enviar SMS
-                    sendMessagePrueba();
-//                    sendMessage(); -----CONTROLAR QUE EXISTA EL NUMERO DE CELULAR, sino EXISTE, enviar a la pagina PERFIL
-                    //Si no esta suscrito, mostrar instructivo
+//                    sendMessagePrueba();
+                    sendMessage(); //-----CONTROLAR QUE EXISTA EL NUMERO DE CELULAR, sino EXISTE, enviar a la pagina PERFIL
+
 
                 }
 
@@ -265,18 +258,95 @@ public class MainFragment extends RootFragment {
     }
 
     private void sendMessage() {
-        String number = "121";
-        String sms = "s";
+        final String ci = sharedPreferences.getString(getString(R.string.save_ci), getString(R.string.default_value));
+
+        String number = "2727";
+        String sms = ci+" app";
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(number, null, sms, null, null);
             Toast.makeText(getActivity().getApplicationContext(), "Mensaje Enviado!",
                     Toast.LENGTH_LONG).show();
+            getMessageResponse();
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(),
                     "Envio de SMS fallido, intente de nuevo!",
                     Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void getMessageResponse(){
+        final String appID = sharedPreferences.getString(getString(R.string.token), getString(R.string.default_value));
+        String json = ApiImpl.getTransaction("unico", appID);
+        App2727.Logger.i("Mensaje enviado" + json);
+        try {
+            new ApiImpl().post(CommReq.BASE_URL, json, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    App2727.Logger.e(e.getMessage());
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+//                                progressDialog.dismiss();
+                    String responseStr = response.body().string();
+                    App2727.Logger.i("Respuesta = " + responseStr);
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(responseStr);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Gson gson = new Gson();
+
+                    transaccionResponse = gson.fromJson(String.valueOf(jsonObject), TransaccionResponse.class);
+
+
+                    if (transaccionResponse.getStatus().equals(CommReq.STATUS_OK)) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (transaccionResponse.getData().getTransaccion().get(0).getCodRespuesta().equals(CommReq.NO_SE_ENCUENTRA_SUSCRIPTO)) {
+                                    irAInstructivo();
+                                } else {
+                                    String putViewTransString = ApiImpl.putViewTrans(transaccionResponse.getData().getTransaccion().get(0).getIdTransaccion(), appID);
+                                    App2727.Logger.i("Mensaje enviado = " + putViewTransString);
+                                    //Aviso para no mostrar el push notification
+                                    try {
+                                        new ApiImpl().post(CommReq.BASE_URL, putViewTransString, new Callback() {
+                                            @Override
+                                            public void onFailure(Request request, IOException e) {
+                                                App2727.Logger.e(e.getMessage());
+
+                                            }
+
+                                            @Override
+                                            public void onResponse(Response response) throws IOException {
+                                                String responseStr = response.body().string();
+                                                App2727.Logger.i("Respuesta = " + responseStr);
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+
+                                }
+
+                            }
+                        });
+                    } else if (transaccionResponse.getStatus().equals(CommReq.STATUS_ERROR)) {
+                        Utils.customAlertDialogWithOk(getActivity(), transaccionResponse.getStatus(), transaccionResponse.getData().getTransaccion().get(0).getMensaje()).show();
+
+                    }
+
+//                                showDialogOk("OK!", transaccionResponse.getData().getTransaccion().get(0).getMensaje());
+
+                }
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

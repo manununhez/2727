@@ -5,12 +5,7 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnSMS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="SEND SMS"/>
+
     <LinearLayout
         android:id="@+id/llText"
         android:layout_width="match_parent"
